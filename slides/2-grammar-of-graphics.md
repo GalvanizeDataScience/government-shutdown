@@ -54,6 +54,34 @@ Collision modifiers
 * Dodge (symmetric, asymmetric)
 * Jitter (uniform, normal)
 
+## Coordinates
+(chapter 9)
+
+Transformations
+
+* Isometry (translation, rotation, reflection)
+* Similarity (dilation)
+* Affine (stretch, shear)
+* Projective
+* Conformal
+
+Specific things
+
+* Polar coordinates (conformal)
+* Warpings (conformal)
+* Map projections (projective)
+
+## Statistics
+(chapter 7)
+
+Methods
+
+* Bin
+* Summary
+* Region
+* Smooth
+* Link
+
 ## Scales
 (chapter 6)
 
