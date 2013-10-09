@@ -9,6 +9,18 @@ The Grammar of Graphics
 * `COORD`
 * `GUIDE`
 
+## Aesthetics
+(chapter 10)
+
+* Form (position, size, &c.)
+* Surface (color, texture, &c.)
+* Motion (direction, speed, &c.)
+* Sound (tone, volume, &c.)
+* Text
+
+"Sound" is part of the grammar even
+though we might not see it graphically.
+
 ## Variables
 (chapter 4)
 
