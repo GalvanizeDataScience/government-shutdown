@@ -13,15 +13,21 @@ library(sqldf)
 # install.packages(c('ggplot2','sqldf'))
 
 
+# Load all of the tables into R
+.tables <- sqldf('SELECT tbl_name FROM sqlite_master', dbname = 'treasury_data.db')$tbl_name
+for (.table in .tables) {
+  .sql <- paste('SELECT * FROM', .table)
+  assign(.table, sqldf(.sql, dbname = 'treasury_data.db'))
+}
 
 
 # Querying
-t3a_head <- sqldf('SELECT * FROM t3a LIMIT 100;', dbname = 'treasury_data.db')
+t3a_head <- sqldf('SELECT * FROM t3a LIMIT 100;')
 
 # Note: sqldf queries both from the SQLite3 database
 # and from the current R session.
 
-print(sqldf('SELECt sum(today) FROM t3a_head'), dbname = 'treasury_data.db')
+print(sqldf('SELECt sum(today) FROM t3a_head'))
 
 # Note well: DO NOT CREATE VARIABLES WITH THE NAMES OF ANY OF THE TABLES.
 # If you do that, sqldf will query the table from the R session rather than
@@ -35,4 +41,5 @@ print(sqldf('SELECt sum(today) FROM t3a_head'), dbname = 'treasury_data.db')
 # There are a lot of syntaxes you can use with ggplot.
 # This one is probably the most verbose format you can get,
 # but it makes the different components quite clear.
-# ggplot(
+p <- ggplot(t3a_head) + aes(x = date, y = today) + geom_point()
+print(p)
