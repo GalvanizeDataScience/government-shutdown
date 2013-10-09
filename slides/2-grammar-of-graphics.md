@@ -54,6 +54,11 @@ Collision modifiers
 * Dodge (symmetric, asymmetric)
 * Jitter (uniform, normal)
 
+## Spaces
+(chapter 13)
+
+The underlying space versus the display space
+
 ## Coordinates
 (chapter 9)
 
@@ -88,3 +93,16 @@ Methods
 * Scale transformations (`TRANS`)
 * Nice numbers
 * Really nice numbers
+
+## Algebra
+
+* Cross (cross product, factorial)
+* Nest (block)
+* Blend (concatenate)
+
+## Examples
+
+* Bar graph versus Pie chart
+* Histogram
+* Faceting
+* Napoleon's march
