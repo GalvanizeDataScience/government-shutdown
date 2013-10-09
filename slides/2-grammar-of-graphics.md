@@ -106,3 +106,4 @@ Methods
 * Histogram
 * Faceting
 * Napoleon's march
+* http://ggplot2.org/resources/2007-past-present-future.pdf
