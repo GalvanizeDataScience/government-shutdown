@@ -39,6 +39,21 @@ Transforms
 * Statistical
 * Multivariate
 
+## Geometry
+(chapter 8)
+
+Geometric graphs
+
+* Functions (point, line, area, &c.)
+* Partitions (polygon, contour)
+* Networks (edge)
+
+Collision modifiers
+
+* Stack (symmetric, asymmetric)
+* Dodge (symmetric, asymmetric)
+* Jitter (uniform, normal)
+
 ## Scales
 (chapter 6)
 
