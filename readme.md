@@ -53,9 +53,22 @@ things. Here are some ideas.
     If you already understand how these works, use R
     to build models about what is going on.
 
-## Readings
+
+## Required readings/videos
+
+* This [summary]() of Timothy Samara's Design Elements.
+* Grammar of graphics video?
+    http://ggplot2.org/resources/2007-vanderbilt.pdf
+
+## References (optional readings)
 
 ### Day 1
 
+* The Grammar of Graphics
+* [ggplot2 documuentation](http://docs.ggplot2.org/current/)
 
 ### Day 2
+
+* Design Elements, by Timothy Samara
+* Some R introduction
+* [R Spells for Data Wizards](http://thomaslevine.com/!/r-spells-for-data-wizards/)
