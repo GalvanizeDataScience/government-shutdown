@@ -16,8 +16,10 @@ library(sqldf)
 # Load all of the tables into R
 .tables <- sqldf('SELECT tbl_name FROM sqlite_master', dbname = 'treasury_data.db')$tbl_name
 for (.table in .tables) {
-  .sql <- paste('SELECT * FROM', .table)
-  assign(.table, sqldf(.sql, dbname = 'treasury_data.db'))
+  if (!(.table %in% ls())) {
+    .sql <- paste('SELECT * FROM', .table)
+    assign(.table, sqldf(.sql, dbname = 'treasury_data.db'))
+  }
 }
 
 
