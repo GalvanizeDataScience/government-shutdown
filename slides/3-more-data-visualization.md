@@ -8,4 +8,4 @@ and break one or two.
 
 * Data:ink ratio
 * Escape Flatland; present multivariate data.
-* Small multiples (facets)
+* [Examples](http://www.edwardtufte.com/tufte/)
