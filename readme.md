@@ -24,6 +24,8 @@ feed as a SQLite3 database.
 
     wget ...
 
+Here's a [codebook](https://github.com/csvsoundsystem/federal-treasury-api/wiki/Treasury.io-Data-Dictionary).
+
 ## Goals
 * Learn some data visualization theory
 * Learn how to make plots in ggplot2
