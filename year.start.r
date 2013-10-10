@@ -24,3 +24,6 @@ p <- ggplot(start.v.mean) +
   aes(x = item, color = year == 2013, shape = transaction_type, y = difference) +
   geom_point(alpha = 0.5) + coord_flip() +
   scale_y_log10('Amount for year start over mean amount for the year', labels = comma)
+
+hist(log(start.v.mean$difference))
+wilcox.test(log(start.v.mean$difference))                                         
