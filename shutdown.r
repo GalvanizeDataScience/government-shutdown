@@ -8,6 +8,7 @@ if (!(file.exists('treasury_data.db'))) {
 # Load dependencies
 library(ggplot2)
 library(sqldf)
+library(plyr)
 
 # Run this if the "library" commands fail.
 # install.packages(c('ggplot2','sqldf'))
@@ -48,6 +49,41 @@ AND ("transaction_type" = \'deposit\' OR "transaction_type" = \'withdrawal\')
 '
 
 recent.transactions <- sqldf(sql)
-p <- ggplot(subset(recent.transactions, is_total == 0)) +
+recent.transactions$date <- as.Date(recent.transactions$date)
+
+'
+p1 <- ggplot(subset(recent.transactions, is_total == 0)) +
   aes(x = date, group = transaction_type, color = transaction_type, y = today) +
   geom_line() + facet_wrap(~ item)
+'
+
+shutdown.date <- as.Date('2013-10-01')
+
+p2 <- ggplot(subset(recent.transactions, item == 'Medicare')) +
+  aes(x = date, group = transaction_type, color = transaction_type, y = today) +
+  geom_line() + geom_vline(xintercept = as.numeric(shutdown.date))
+
+"
+difference <- ddply(recent.transactions, 'item', function(df) {
+  c(oct.1 = subset(df, date == shutdown.date)$today,
+    median = median(df$today))
+})
+"
+
+
+
+sql <- '
+SELECT
+  "date",
+  "item",
+  "today",
+  "year"
+FROM "t2"
+WHERE
+  "month" = 10 AND "day" < 4 AND
+  ("transaction_type" = \'deposit\' OR "transaction_type" = \'withdrawal\')
+ORDER BY "day" DESC
+GROUP BY "date"
+'
+
+year.start <- sqldf(sql)
