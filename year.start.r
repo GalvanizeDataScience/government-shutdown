@@ -15,6 +15,6 @@ start.v.mean$item <- factor(start.v.mean$item,
   levels = unique(start.v.mean$item[order(start.v.mean$difference)]))
 
 p <- ggplot(start.v.mean) +
-  aes(x = item, group = transaction_type, color = transaction_type, y = difference) +
-  geom_line() + coord_flip() +
-  scale_y_log10('Amount for year start over mean amount for the year', labels = dollar)
+  aes(x = item, color = year == 2013, shape = transaction_type, y = difference) +
+  geom_point(alpha = 0.5) + coord_flip() +
+  scale_y_log10('Amount for year start over mean amount for the year', labels = comma)
