@@ -21,9 +21,10 @@ FROM "t2"
 WHERE "transaction_type" = 'deposit' OR "transaction_type" = 'withdrawal'
 GROUP BY "item", "transaction_type", "year";
 
+DROP VIEW IF EXISTS "start_versus_mean";
+CREATE VIEW "start_versus_mean" AS
 SELECT year_start.item, year_start.transaction_type, year_start.year, year_start."date", year_start.today, year_mean.mean
 FROM year_start JOIN year_mean
 ON year_start.item = year_mean.item AND
    year_start.transaction_type = year_mean.transaction_type AND
-   year_start.year = year_mean.year
-LIMIT 10;
+   year_start.year = year_mean.year;
