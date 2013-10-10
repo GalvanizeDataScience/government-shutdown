@@ -1,6 +1,7 @@
 library(sqldf)
 library(ggplot2)
 library(scales)
+library(plyr)
 
 start.v.mean <- sqldf('select * from start_versus_mean', dbname = 'treasury_data.db')
 "
@@ -11,8 +12,13 @@ molten <- melt(start.v.mean,
 "
 
 start.v.mean$difference <- start.v.mean$today / start.v.mean$mean
+
+item.medians <- ddply(start.v.mean, 'item', function(df) {
+  c(median = median(df$difference))
+})
+
 start.v.mean$item <- factor(start.v.mean$item,
-  levels = unique(start.v.mean$item[order(start.v.mean$difference)]))
+  levels = item.medians$item[order(item.medians$median)])
 
 p <- ggplot(start.v.mean) +
   aes(x = item, color = year == 2013, shape = transaction_type, y = difference) +
