@@ -27,3 +27,7 @@ p <- ggplot(start.v.mean) +
 
 hist(log(start.v.mean$difference))
 wilcox.test(log(start.v.mean$difference))                                         
+
+
+# plot(log(mean) ~ log(today), data = na.omit(start.v.mean))
+
