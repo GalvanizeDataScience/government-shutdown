@@ -18,6 +18,7 @@ d.subset <- subset(d.full,
   item == 'Medicaid' )
 d.subset <- subset(d.subset, transaction_type == 'withdrawal')
 d.subset$item <- factor(d.subset$item)
+d.subset$month.side <- d.subset$day <= 3 | d.subset$day >= 26
 
 p1 <- ggplot(d.subset) +
   aes(x = date, y = today, group = item) +
@@ -32,5 +33,14 @@ p2 <- ggplot(d.subset) +
   scale_shape_discrete('Is it the first, second or third of the month?') +
   geom_line() + geom_point()
 
+p3 <- function() {
+  par(mfrow = 1:2)
+  plot(today ~ day + item, data = d.subset)
+
+  plot(today ~ month.side + item, data = d.subset)
+}
+
+p4 <- ggplot(d.subset) + aes(x = item, y = today, color = month.side, group = month.side) +
+  geom_line()
+
 #m <- lm(today ~ day + item, data = d.subset)
-plot(today ~ day + item, data = d.subset)
