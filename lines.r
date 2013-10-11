@@ -2,6 +2,8 @@ library(sqldf)
 library(ggplot2)
 library(scales)
 library(plyr)
+library(MASS)
+library(reshape)
 
 if (!('d.full' %in% ls())) {
   d.full <- sqldf('select date, today, weekday, day, item, transaction_type from t2', dbname = 'treasury_data.db')
@@ -40,7 +42,12 @@ p3 <- function() {
   plot(today ~ month.side + item, data = d.subset)
 }
 
-p4 <- ggplot(d.subset) + aes(x = item, y = today, color = month.side, group = month.side) +
-  geom_line()
+p4 <- ggplot(d.subset) + aes(x = item, y = today, color = month.side) +
+  geom_point(position = position_jitter(), alpha = 0.3)
 
-#m <- lm(today ~ day + item, data = d.subset)
+# Ordinary least-squares regression
+m <- lm(today ~ month.side * item, data = d.subset)
+
+# Comparing OLS to robust regression
+d.two <- subset(d.full, item == "Federal Crop Ins Corp" | item == "Pension Benefit Guaranty Corp")[c('date','item','today')]
+d.two.cast <- cast(d.two, date ~ item, fun.aggregate = sum)
