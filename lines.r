@@ -50,4 +50,28 @@ m <- lm(today ~ month.side * item, data = d.subset)
 
 # Comparing OLS to robust regression
 d.two <- subset(d.full, item == "Federal Crop Ins Corp" | item == "Pension Benefit Guaranty Corp")[c('date','item','today')]
-d.two.cast <- cast(d.two, date ~ item, fun.aggregate = sum)
+d.two$month <- strftime(d.two$date, '%Y-%m')
+d.two.cast <- cast(d.two, month ~ item, fun.aggregate = sum, value = 'today')
+colnames(d.two.cast)[2:3] <- c('crop.ins','pension')
+
+# plot(d.two.cast)
+par(mfrow = c(2,2))
+
+m1 <- lm(crop.ins ~ pension, data = d.two.cast)
+plot(crop.ins ~ pension, data = d.two.cast, main = 'Linear model')
+abline(m1)
+
+m2 <- rlm(crop.ins ~ pension, data = d.two.cast)
+plot(crop.ins ~ pension, data = d.two.cast, main = 'Robust linear model')
+abline(m2)
+
+d.two.cast[2:3] <- d.two.cast[2:3] + 1
+
+m3 <- lm(log(crop.ins) ~ log(pension), data = d.two.cast)
+plot(log(crop.ins) ~ log(pension), data = d.two.cast, main = 'Linear model, with additive smoothing')
+abline(m3)
+
+m4 <- rlm(log(crop.ins) ~ log(pension), data = d.two.cast)
+plot(log(crop.ins) ~ log(pension), data = d.two.cast, main = 'Robust linear model, with additive smoothing')
+abline(m4)
+
