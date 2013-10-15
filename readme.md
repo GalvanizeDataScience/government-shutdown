@@ -49,16 +49,20 @@ Choose one of these four visuals to present to the class;
 we'll start day 2 with these presentations.
 
 ### Government shutdown analysis
+[Time](http://swampland.time.com/2013/10/15/see-for-yourself-uncle-sams-bank-account-running-low/)
+looked at how the federal government's finances have been doing for the past two weeks.
+Their analysis is pretty cool, but you can do better.
+
 Explore the data, figure out something interesting
 about the government shutdown, and explain this in
 a blog post that includes some explanatory plots.
 
 During lecture on day 1, we'll show you how to
-use the R library ggplot2, but we won't expect
-you to know anything about R other than this.
-Base your plotting code on [`boilerplate.r`](boilerplate.r)
+use the R library ggplot2, but we won't talk too much
+about how R works in general until day 2.
+
+Base your code on [`boilerplate.r`](boilerplate.r)
 so that you don't have to know how R works.
-We'll talk a bit about R during day 2.
 
 ### More critique of visuals
 Look at the four visuals that you selected before.
@@ -85,15 +89,16 @@ things. Here are some ideas.
 * Grammar of graphics video?
     http://ggplot2.org/resources/2007-vanderbilt.pdf
 
-## References (optional readings)
+## Resources
 
 ### Day 1
 
-* The Grammar of Graphics
+* The Grammar of Graphics, by Leland Wilkinson
 * [ggplot2 documuentation](http://docs.ggplot2.org/current/)
 
 ### Day 2
 
 * Design Elements, by Timothy Samara
-* Some R introduction
 * [R Spells for Data Wizards](http://thomaslevine.com/!/r-spells-for-data-wizards/)
+* [Intro to R](http://www.youtube.com/playlist?list=PLOU2XLYxmsIK9qQfztXeybpHvru-TrqAP) videos
+* [R-bloggers](http://www.r-bloggers.com/)
