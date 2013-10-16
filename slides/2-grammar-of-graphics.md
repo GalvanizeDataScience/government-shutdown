@@ -116,6 +116,10 @@ Methods
 * Smooth
 * Link
 
+![](grammar-126)
+
+(page 126 of *The Grammar of Graphics*)
+
 ## Scales
 (chapter 6)
 
