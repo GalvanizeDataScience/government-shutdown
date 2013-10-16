@@ -71,6 +71,10 @@ Collision modifiers
 * Dodge (symmetric, asymmetric)
 * Jitter (uniform, normal)
 
+![](grammar-174)
+
+(page 174 of *The Grammar of Graphics*)
+
 ## Spaces
 (chapter 13)
 
