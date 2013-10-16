@@ -43,6 +43,9 @@ non-graphical annotations
 
 (page 350 of *The Grammar of Graphics*)
 
+Note: `*` is called "cross". Think of it as
+a factorial.
+
 ## Variables
 (chapter 4)
 
@@ -130,12 +133,6 @@ Methods
 ![](grammar-102.png)
 
 (page 102 of *The Grammar of Graphics*)
-
-## Algebra
-
-* Cross (cross product, factorial)
-* Nest (block)
-* Blend (concatenate)
 
 ## Examples
 
