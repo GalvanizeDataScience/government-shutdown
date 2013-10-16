@@ -1,8 +1,8 @@
 Government Shutdown
 ======
-The federal government recently shut down.
-Let's look at how spending has changed during
-the shutdown.
+The federal government recently
+[shut down](http://en.wikipedia.org/wiki/United_States_federal_government_shutdown_of_2013).
+Let's look what their finances have looked like during the shutdown.
 
 ## Schedule
 This project is spread across two days, plus the
@@ -22,7 +22,7 @@ from different accounts within the federal
 treasury. You can download the full historical
 feed as a SQLite3 database.
 
-    wget ...
+    wget http://api.treasury.io/cc7znvq/47d80ae900e04f2/http/treasury_data.db
 
 Here's a [codebook](https://github.com/csvsoundsystem/federal-treasury-api/wiki/Treasury.io-Data-Dictionary).
 
