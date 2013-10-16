@@ -23,8 +23,12 @@ The Grammar of Graphics
 * Sound (tone, volume)
 * Text
 
-"Sound" is part of the grammar even
-though we might not see it graphically.
+(There could be others, like sound.)
+
+<!--
+Draw variations of these aethetics
+on the whiteboard.
+-->
 
 ## Guides
 (chapter 12)
@@ -34,6 +38,10 @@ non-graphical annotations
 
 * Scales (axis, legend)
 * Annotations (text, image)
+
+![](grammar-350.png)
+
+(page 350 of *The Grammar of Graphics*)
 
 ## Variables
 (chapter 4)
