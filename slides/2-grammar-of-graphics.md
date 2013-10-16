@@ -80,6 +80,10 @@ Collision modifiers
 
 The underlying space versus the display space
 
+![](grammar-400)
+
+(page 400 of *The Grammar of Graphics*)
+
 ## Coordinates
 (chapter 9)
 
