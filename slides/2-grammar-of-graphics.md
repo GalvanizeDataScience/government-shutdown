@@ -101,6 +101,10 @@ Specific things
 * Warpings (conformal)
 * Map projections (projective)
 
+![](grammar-208)
+
+(page 208 of *The Grammar of Graphics*)
+
 ## Statistics
 (chapter 7)
 
