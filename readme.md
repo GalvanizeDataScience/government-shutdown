@@ -86,10 +86,9 @@ things. Here are some ideas.
 
 * This [summary](http://www.behance.net/gallery/Book-Layout-Timothy-Samaras-20-Rules-of-Good-Design/7616553)
     of Timothy Samara's Design Elements.
-* Grammar of graphics video?
-    http://ggplot2.org/resources/2007-vanderbilt.pdf
+* [Engineering Data Analysis](http://www.youtube.com/watch?v=TaxJwC_MP9Q)
 
-## Resources
+## Other resources
 
 ### Day 1
 
