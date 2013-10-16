@@ -52,6 +52,10 @@ Transforms
 * Statistical
 * Multivariate
 
+![](grammar-48.png)
+
+(page 48 of *The Grammar of Graphics*)
+
 ## Geometry
 (chapter 8)
 
