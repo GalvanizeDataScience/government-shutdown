@@ -71,7 +71,7 @@ Collision modifiers
 * Dodge (symmetric, asymmetric)
 * Jitter (uniform, normal)
 
-![](grammar-174)
+![](grammar-174.png)
 
 (page 174 of *The Grammar of Graphics*)
 
@@ -80,7 +80,7 @@ Collision modifiers
 
 The underlying space versus the display space
 
-![](grammar-400)
+![](grammar-400.png)
 
 (page 400 of *The Grammar of Graphics*)
 
@@ -101,7 +101,7 @@ Specific things
 * Warpings (conformal)
 * Map projections (projective)
 
-![](grammar-208)
+![](grammar-208.png)
 
 (page 208 of *The Grammar of Graphics*)
 
@@ -116,7 +116,7 @@ Methods
 * Smooth
 * Link
 
-![](grammar-126)
+![](grammar-126.png)
 
 (page 126 of *The Grammar of Graphics*)
 
@@ -124,8 +124,12 @@ Methods
 (chapter 6)
 
 * Scale transformations (`TRANS`)
-* Nice numbers
-* Really nice numbers
+* Really nice numbers: Nice sequences that
+    include zero
+
+![](grammar-102.png)
+
+(page 102 of *The Grammar of Graphics*)
 
 ## Algebra
 
