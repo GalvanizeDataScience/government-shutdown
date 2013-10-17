@@ -93,6 +93,9 @@ before day 1 of the project.
 
 * The Grammar of Graphics, by Leland Wilkinson
 * [ggplot2 documuentation](http://docs.ggplot2.org/current/)
+* Scales examples
+  * [Wetlands data](https://github.com/tlevine/scales-lightning-talk)
+  * [Treasury data](scales-example.r)
 
 ### Day 2
 
