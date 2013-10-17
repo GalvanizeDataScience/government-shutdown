@@ -1,7 +1,7 @@
 # Check that the database file is there.
 if (!(file.exists('treasury_data.db'))) {
   cat('You need to download the database; run this.\n')
-  cat('  wget http://api.treasury.io/cc7znvq/47d80ae900e04f2/http/treasury_data.db\n')
+  cat('wget http://api.treasury.io/cc7znvq/47d80ae900e04f2/http/treasury_data.db\n')
   quit()
 }
 
@@ -25,7 +25,6 @@ for (.table in .tables) {
 
 # Querying
 t3a_head <- sqldf('SELECT * FROM t3a LIMIT 100;')
-
 print(sqldf('SELECt sum(today) FROM t3a_head'))
 
 
@@ -35,6 +34,6 @@ print(sqldf('SELECt sum(today) FROM t3a_head'))
 # This one is probably the most verbose format you can get,
 # but it makes the different components quite clear.
 p1 <- ggplot(t3a_head) + aes(x = date, y = today) + geom_point()
-p2 <- ggplot(t3a_head) + aes(x = today) +
-  stat_bin(binwidth = 1e5, geom = 'area')
-print(p)
+p2 <- ggplot(t3a_head) + aes(x = today) + stat_bin(binwidth = 1e5, geom = 'area')
+print(p1)
+

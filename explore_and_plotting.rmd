@@ -1,0 +1,103 @@
+Exploring the Governement shutdown data
+========================================================
+
+Let's start with trying to make sense of data...
+From Toms' script I knwo that e have 3 tables:
+t1 t4 and t3a.
+
+t1 seems to be the operating cash balance
+t4 is the Federal Tax deposit
+t3 is the Public Dept transaction.
+
+Rememebr is always good to read any doc availble that explains the data:
+from the documentation:
+T1 explains "how much money does Uncle Sam have in his checking account on any given day""
+
+Now I want to explore a little bit the data.
+TO chekc if they have the same data range for instance. Let's use some SQL.
+
+```{r}
+library(sqldf)
+library(ggplot2)
+library(scales)
+setwd('/Users/carlotorniai/Dropbox/Zipfian/git/government-shutdown')
+# Load all of the tables into R
+.tables <- sqldf('SELECT tbl_name FROM sqlite_master', dbname = 'treasury_data.db')$tbl_name
+for (.table in .tables) {
+  if (!(.table %in% ls())) {
+    .sql <- paste('SELECT * FROM', .table)
+    assign(.table, sqldf(.sql, dbname = 'treasury_data.db'))
+  }
+}
+# Let's try to experiment with some queries..
+print('Min date in T1')
+print(sqldf('SELECT MIN(date) FROM t1;'))
+print('Max date in T1')
+print(sqldf('SELECT MAX(date) FROM t1;'))
+```
+
+So we have data from 2005 until 2013.
+Hopefull we will have the same date range in all the tables.
+Let's check for isntance table 2
+```{r}
+# Let's try to experiment with some queries..
+print ("Min date in T4")
+print(sqldf("SELECT MIN(date) FROM t4;"))
+print ("Max date in T4")
+print(sqldf("SELECT MAX(date) FROM t4;"))
+```
+
+So it seems we have the same date range.
+So in T1 we have the type of accounts for  operating cash balance.
+These are under the column:
+account or account row. Let's check the variosu types of accounts
+
+
+```{r}
+sql<- 'SELECT DISTINCT account from t1;'
+print(sqldf(sql))
+```
+
+Now Let's plot the trend across the last 5 years
+```{r}
+# Let's get the data first
+sql <- 'select * from t1 where account ="Federal Reserve Account" and date > "2011-01-01"'
+federal_account_trend = sqldf(sql)
+# Let's transform the dates in date
+federal_account_trend$date <- as.Date(federal_account_trend$date)
+# Let's plot and ad some axis
+ggplot(federal_account_trend, aes(x = date, y=open_today)) + geom_point()
+```
+
+```{r}
+sql <- 'select * from "t1" where date > "2013-09-01" and account = "Federal Reserve Account"'
+d <- sqldf(sql)
+qplot(x = date, y = open_today, data = d, geom = "point")
+```
+
+Ok let's try now ti have acomulative sum per year and visualize it as a barpolt
+I have a filed which is year...
+Also I have the open_fy which indicates for each account the opening balance for fiscal year.
+So to have a rough trand over the years I can get just this value for each year in the table. 
+
+
+```{r}
+# Ok now i try to plot the different types of account per year one next to the ohter.
+accounts <- sqldf('select distinct account, open_fy, year from t1')
+p1 <- ggplot(accounts, aes(x=year, y=open_fy, group=account, fill=account)) + geom_bar(position="dodge", stat="identity") + xlab("Year") + ylab("Amount in Milions of US dollars") + labs(title = "Opening account Balance for account type between 2005 and 2013")
+
+p2 <- p1 +  scale_y_continuous(labels = dollar) + scale_x_continuous(breaks=2005:2013)
+# Here I want to try to use the scale on Y to display the dollar
+# Now I want to add each entry 
+
+p2
+```
+We can see how during the big financial crisis  (2008-2011) everything went "off scale".
+In particular notice the Supplementary Financing Program. 
+
+Now we want to go and see where this money went. In order to do this I want to analyze the data
+of the withdrowals of money in table2.
+
+
+
+Then I want to ask: what did it change with government shoutdown in the first two weeks of October 2013?
