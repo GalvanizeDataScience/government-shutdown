@@ -26,6 +26,22 @@ feed as a SQLite3 database.
 
 Here's a [codebook](https://github.com/csvsoundsystem/federal-treasury-api/wiki/Treasury.io-Data-Dictionary).
 
+## Software
+You're going to use R for this project.
+
+R is already installed on your vagrant machine, but you probably
+want RStudio. RStudio is a fancy development environment for R,
+and you can download it here.
+http://www.rstudio.com/ide/download/desktop
+
+You might also find it helpful to install ordinary R outside of your
+vagrant machine.
+http://cran.r-project.org/
+
+Sometimes, scripting the plot's format is more work than it's worth.
+Consider using Inkscape to tidy up the plot afterwards.
+http://inkscape.org/download/?lang=en
+
 ## Goals
 * Learn some data visualization theory
 * Learn how to make plots in ggplot2
