@@ -84,9 +84,8 @@ things. Here are some ideas.
 
 ## Required readings/videos
 
-* Day 1: [Engineering Data Analysis](http://www.youtube.com/watch?v=TaxJwC_MP9Q)
-* Day 2: This [summary](http://www.behance.net/gallery/Book-Layout-Timothy-Samaras-20-Rules-of-Good-Design/7616553)
-    of Timothy Samara's Design Elements.
+Watch [Engineering Data Analysis](http://www.youtube.com/watch?v=TaxJwC_MP9Q)
+before day 1 of the project.
 
 ## Other resources
 
@@ -97,6 +96,8 @@ things. Here are some ideas.
 
 ### Day 2
 
+* [Summary](http://www.behance.net/gallery/Book-Layout-Timothy-Samaras-20-Rules-of-Good-Design/7616553)
+    of Timothy Samara's Design Elements.
 * Design Elements, by Timothy Samara
 * [R Spells for Data Wizards](http://thomaslevine.com/!/r-spells-for-data-wizards/)
 * [Intro to R](http://www.youtube.com/playlist?list=PLOU2XLYxmsIK9qQfztXeybpHvru-TrqAP) videos
