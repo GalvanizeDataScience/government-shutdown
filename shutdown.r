@@ -86,4 +86,4 @@ ORDER BY "day" DESC
 GROUP BY "date"
 '
 
-year.start <- sqldf(sql)
+# year.start <- sqldf(sql)
