@@ -84,9 +84,9 @@ things. Here are some ideas.
 
 ## Required readings/videos
 
-* This [summary](http://www.behance.net/gallery/Book-Layout-Timothy-Samaras-20-Rules-of-Good-Design/7616553)
+* Day 1: [Engineering Data Analysis](http://www.youtube.com/watch?v=TaxJwC_MP9Q)
+* Day 2: This [summary](http://www.behance.net/gallery/Book-Layout-Timothy-Samaras-20-Rules-of-Good-Design/7616553)
     of Timothy Samara's Design Elements.
-* [Engineering Data Analysis](http://www.youtube.com/watch?v=TaxJwC_MP9Q)
 
 ## Other resources
 
