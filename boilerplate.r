@@ -26,16 +26,7 @@ for (.table in .tables) {
 # Querying
 t3a_head <- sqldf('SELECT * FROM t3a LIMIT 100;')
 
-# Note: sqldf queries both from the SQLite3 database
-# and from the current R session.
-
 print(sqldf('SELECt sum(today) FROM t3a_head'))
-
-# Note well: DO NOT CREATE VARIABLES WITH THE NAMES OF ANY OF THE TABLES.
-# If you do that, sqldf will query the table from the R session rather than
-# from the SQLite3 database.
-
-
 
 
 # Plotting
