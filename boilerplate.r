@@ -34,5 +34,7 @@ print(sqldf('SELECt sum(today) FROM t3a_head'))
 # There are a lot of syntaxes you can use with ggplot.
 # This one is probably the most verbose format you can get,
 # but it makes the different components quite clear.
-p <- ggplot(t3a_head) + aes(x = date, y = today) + geom_point()
+p1 <- ggplot(t3a_head) + aes(x = date, y = today) + geom_point()
+p2 <- ggplot(t3a_head) + aes(x = today) +
+  stat_bin(binwidth = 1e5, geom = 'area')
 print(p)
