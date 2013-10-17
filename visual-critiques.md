@@ -5,4 +5,5 @@
 ## 3. A good non-data visual
 
 ## 4. A bad non-data visual
+![alt text](COIN.jpg 'US Counter-Insurgency Strategy in Iraq')
 
