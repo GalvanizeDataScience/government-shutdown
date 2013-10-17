@@ -66,7 +66,7 @@ federal_account_trend = sqldf(sql)
 # Let's transform the dates in date
 federal_account_trend$date <- as.Date(federal_account_trend$date)
 # Let's plot and ad some axis
-ggplot(federal_account_trend, aes(x = date, y=open_today)) + geom_point()
+ggplot(federal_account_trend, aes(x = date, y=open_today)) + geom_line()
 ```
 
 ```{r}
@@ -92,10 +92,10 @@ p2 <- p1 +  scale_y_continuous(labels = dollar) + scale_x_continuous(breaks=2005
 
 p2
 ```
-We can see how during the big financial crisis  (2008-2011) everything went "off scale".
+We can see how during the big financial crisis (2008-2011) everything went "off scale".
 In particular notice the Supplementary Financing Program. 
 
-Now we want to go and see where this money went. In order to do this I want to analyze the data
+Now I want  to go and see where this money went. In order to do this I want to analyze the data
 of the withdrowals of money in table2.
 
 
