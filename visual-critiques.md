@@ -1,5 +1,7 @@
 ## 1. A good data visual
-<object width="450" height="333"><param name="movie" value="http://www.animalvisuals.org/p/slaughter/swf/slaughter_2008.swf"></param><embed src="http://www.animalvisuals.org/p/slaughter/swf/slaughter_2008.swf" type="application/x-shockwave-flash" width="450" height="333"></embed></object>
+![alt text](animal.png)
+
+[Animation](http://www.animalvisuals.org/p/slaughter/swf/slaughter_2008.swf)
 
 ## 2. A bad data visual
 ![alt text](laffer.gif)
