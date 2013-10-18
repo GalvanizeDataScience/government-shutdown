@@ -13,7 +13,7 @@ str(t1_subset)
 
 t2$date <- as.Date(t2$date)
 withdrawals <-t2[(t2$transaction_type == 'withdrawal') & (t2$is_net == 0) & (t2$date > as.Date('2008-01-01')),]
-top = names(sort(table(withdrawals$item), decreasing = TRUE)[1:10])
+top = names(sort(table(withdrawals$item), decreasing = TRUE)[1:20])
 withdrawals$greatest = factor(withdrawals$item, levels = top)
 top_item_wd <- withdrawals[withdrawals[,'item']%in%top,]
 #with_great_freq <- withdrawals[withdrawals$item%in%withdrawals$greatest]
