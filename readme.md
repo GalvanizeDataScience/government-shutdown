@@ -42,6 +42,14 @@ Sometimes, scripting the plot's format is more work than it's worth.
 Consider using Inkscape to tidy up the plot afterwards.
 http://inkscape.org/download/?lang=en
 
+Here's the R code for plotting a graph to PDF so you can
+edit it in Inkscape.
+
+    pdf('withdrawals.pdf', width = 11, height = 8.5)
+    print(p1)
+    dev.off()
+
+
 ## Goals
 * Learn some data visualization theory
 * Learn how to make plots in ggplot2
