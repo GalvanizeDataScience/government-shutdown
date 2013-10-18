@@ -22,7 +22,7 @@ p1 <- ggplot(top_item_wd)
 p1 <- p1 + aes(x = date, y = today, group = greatest, color = greatest) + geom_point(na.rm = TRUE)
 p1 + scale_y_log10(labels = dollar) 
 
-top_item_wd$recent <- sapply(top_item_wd$date, function(x){if (x > as.Date('2013-08-01')) 1 else 0})
+top_item_wd$recent <- sapply(top_item_wd$date, function(x){if (x > as.Date('2013-08-15')) 1 else 0})
 recent_mask = top_item_wd[,'recent'] == 1
 old_mask = top_item_wd[,'recent'] == 0
 recent_agg <- aggregate(today~item, data = top_item_wd[recent_mask,], FUN = mean)
@@ -42,17 +42,22 @@ print(p2)
 
 merged_agg = merge(x = recent_agg, y = old_agg, by.x = 'item', by.y = 'item', all.y = TRUE)
 names(merged_agg) = c('item', 'recent', 'history')
-merged_agg[is.na(merged_agg)]<- 0
+merged_agg[is.na(merged_agg)]<- .0000000001
 merged_agg[,]
-merged_$diff = merged_agg$history - merged_agg$recent
+merged_agg$diff = merged_agg$history - merged_agg$recent
 ggplot(merged_agg) + aes(x = item, y = diff) + geom_bar(stat = 'identity') +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) + scale_y_log10()
+
+p3 <- ggplot(merged_agg) + aes(x = item, y = recent, fill = 'red') + aes(x = item, y = history, fill = 'green') + 
+  geom_bar(stat = 'identity', position = 'dodge') + scale_y_log10() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+print(p3)
 
 pos_names = merged_agg[merged_agg$diff > 0,'item']
 neg_names = merged_agg[merged_agg$diff <= 0,'item']
 pos_subset = top_item_wd[top_item_wd[,'item']%in%pos_names,]
 neg_subset = top_item_wd[top_item_wd[,'item']%in%neg_names,]
-ggplot(neg_subset) + aes(x = date, y = today, group = item, color = item) + geom_line() + scale_y_log10(labels = dollar)
+ggplot(neg_subset[neg_subset[,'date']>as.Date('2013-9-01'),]) + aes(x = date, y = today, group = item, color = item) + geom_line() + scale_y_continuous(labels = dollar)
 
 #ggsave(filename='shutdown_bar.jpg', plot = p2)
 #ggsave(filename='shutdown_point.jpg', plot = p1)
