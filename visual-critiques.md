@@ -10,5 +10,5 @@
 ![alt text](bach_manuscript.jpg)
 
 ## 4. A bad non-data visual
-![alt text](COIN.jpg 'US Counter-Insurgency Strategy in Iraq')
+![alt text](COIN.jpg)
 
