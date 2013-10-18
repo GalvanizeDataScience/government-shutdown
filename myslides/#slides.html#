@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Graphs</title>
+    
+    <link rel="stylesheet" href="style.css">
+    
+    <meta name="viewport" content="width=device-width">
+    
+    <script src="//code.jquery.com/jquery-latest.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="stack/stack.v0.min.js" charset="utf-8"></script>
+    
+    <link rel="stylesheet" href="stack/stack.css">
+    
+    <style>
+      .big {
+      font-size: 128px;
+      }
+      
+      .caption {
+      font-size: 96px;
+      text-align: center;
+      text-shadow: 0px 2px 6px rgba(0,0,0,.5);
+      }
+      
+      p {
+}
+
+    </style>
+  </head>
+  
+  <body class="overview">
+    <section>
+      <p>this is some text</p>
+    </section>
+    
+    
+    
+  <body>
+</div>
+

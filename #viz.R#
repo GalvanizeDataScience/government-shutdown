@@ -1,0 +1,204 @@
+#viz.R
+
+library(ggplot2)
+library(plyr)
+library(grid)
+library(gridExtra)
+library(sqldf)
+library(knitr)
+
+#source("./boilerplate.r")
+source("./shutdown.r")
+source("./theme.R")
+
+## -- just change the quotes to doublequotes
+# Error in sqliteExecStatement(con, statement, bind.data) :
+#  RS-DBI driver: (error in statement: near "GROUP": syntax error)
+
+head(recent.transactions, 2)
+#                                                 table       date year_month
+# 1 TABLE II Deposits and Withdrawals of Operating Cash 2013-09-03    2013-09
+# 2 TABLE II Deposits and Withdrawals of Operating Cash 2013-09-03    2013-09
+#   year month day weekday                 account transaction_type parent_item
+# 1 2013     9   3 Tuesday Federal Reserve Account          deposit        <NA>
+# 2 2013     9   3 Tuesday Federal Reserve Account          deposit        <NA>
+#   is_total is_net                                 item
+# 1        0      0 Agriculture Loan Repayments ( misc )
+# 2        0      0          Air Transport Security Fees
+#                               item_raw today mtd fytd
+# 1 Agriculture Loan Repayments ( misc )    73  73 8402
+# 2          Air Transport Security Fees     9   9 2165
+#                                                                      url
+# 1 https://www.fms.treas.gov/fmsweb/viewDTSFiles?fname=13090300.txt&dir=a
+# 2 https://www.fms.treas.gov/fmsweb/viewDTSFiles?fname=13090300.txt&dir=a
+
+rt <- recent.transactions
+rm(recent.transactions)
+
+names(rt)
+#  [1] "table"            "date"             "year_month"       "year"
+#  [5] "month"            "day"              "weekday"          "account"
+#  [9] "transaction_type" "parent_item"      "is_total"         "is_net"
+# [13] "item"             "item_raw"         "today"            "mtd"
+# [17] "fytd"             "url"
+
+## T1 | Table I summarizes the operating cash balance of the U.S. Treasury. Think of it as Uncle Sam’s checkbook balance. This table answers the question, “how much money does Uncle Sam have in his checking account on any given day?”
+
+sql <- 'select * from "t1" where date > "2012-10-01" and account = "Federal Reserve Account"'
+d <- sqldf(sql)
+d$date <- as.Date(d$date)
+
+svg("operating_cash_balance.svg", width = 10)
+
+p <- ggplot(d, aes(x = date, y = close_today))
+p <- p + geom_area(fill = "skyblue1", alpha = .5) + geom_line(colour = "black", size = 2)
+p <- p + expand_limits(y = 0) + ggtitle("How much money does Uncle Sam have in his checking account on any given day?")
+p
+
+dev.off()
+
+## T2
+sql <- 'select * from "t2" where date > "2013-09-01" and transaction_type = "withdrawal"'
+d <- sqldf(sql)
+d$date <- as.Date(d$date)
+
+cols <- c("Total Federal Reserve Account", "NASA programs", "Interest on Treasury Securities",
+          "Education Department programs", "Defense Vendor Payments", "Federal Salaries",
+          "Food and Nutrition Service ( misc )", "Medicaid", "Medicare",
+          "Emergency Prep Response ( DHS )", "Federal Transit Admin")
+
+svg("t2_withdrawels_raw.svg", width = 10)
+
+p <- ggplot(d[d$item %in% cols, ], aes(x = date, y = fytd))
+p <- p + geom_point() + geom_line(colour = I("midnightblue"))
+p <- p + facet_wrap(~ item, scales = "free_y")
+p <- p + ylab("Withdrawals: Fiscal year to date")
+p + geom_rect(data = data.frame(xmin = as.Date("2013-10-01"), xmax = as.Date("2013-10-17"), ymin = -Inf, ymax = Inf),
+              aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), inherit.aes = FALSE,
+              alpha = .2)
+
+dev.off()
+
+# do it monthly
+svg("t2_withdrawels_mtd.svg", width = 10)
+
+p <- ggplot(d[d$item %in% cols, ], aes(x = date, y = mtd))
+p <- p + geom_point() + geom_line(colour = I("midnightblue"))
+p <- p + facet_wrap(~ item, scales = "free_y")
+p <- p + ylab("Withdrawals: Fiscal year to date")
+p + geom_rect(data = data.frame(xmin = as.Date("2013-10-01"), xmax = as.Date("2013-10-17"), ymin = -Inf, ymax = Inf),
+              aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), inherit.aes = FALSE,
+              alpha = .2)
+
+dev.off()
+
+
+## rebase for the fiscal year
+d$before_after <- d$date < as.Date("2013-10-01")
+
+fiscal_rebase <- function(d, y) {
+  # d ~ date, y ~ data
+  old_fiscal_year <- d < as.Date("2013-10-01")
+  out <- y
+  out[old_fiscal_year] <- y[old_fiscal_year] - y[1]
+  out
+}
+
+d$fytd_rebased <- d$fytd
+for (i in unique(d$item)) {
+
+  ind <- i == d$item
+  d$fytd_rebased[ind] <- fiscal_rebase(d$date[ind], d$fytd[ind])
+}
+
+svg("t2_withdrawels_rebased.svg", width = 10)
+
+p <- ggplot(d[d$item %in% cols, ], aes(x = date, y = fytd_rebased))
+p <- p + geom_point() + geom_line(colour = I("midnightblue"))
+p <- p + facet_wrap(~ item, scales = "free_y")
+p <- p + ylab("Withdrawals: Fiscal year to date")
+p + geom_rect(data = data.frame(xmin = as.Date("2013-10-01"), xmax = as.Date("2013-10-17"), ymin = -Inf, ymax = Inf),
+              aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), inherit.aes = FALSE,
+              alpha = .2)
+
+dev.off()
+
+## -- US government fiscal year
+## 1st quarter: 1 October 2013 – 31 December 2013
+## 2nd quarter: 1 January 2014 – 31 March 2014
+## 3rd quarter: 1 April 2014 – 30 June 2014
+## 4th quarter: 1 July 2014 – 30 September 2014
+
+## Shutdown => Oct 1 to Oct 17
+
+## T3
+
+sql <- 'select * from "t3c" where date > "2000-10-01"'
+d <- sqldf(sql)
+d$date <- as.Date(d$date)
+
+cols <- c("Total Public Debt Subject to Limit", "Statutory Debt Limit")
+
+svg("debt_ceiling.svg", width = 10)
+
+p <- ggplot(data = d[d$item == "Total Public Debt Subject to Limit", ],
+            aes(x = date, y = open_mo))
+p <- p + geom_area(fill = I('red'), alpha = I(.5), size = 2) + geom_line(colour = I("white"))
+p <- p + geom_segment(aes(x = as.Date(round_any(as.POSIXct(date), 60*60*24*7*3, floor)),
+                          xend = as.Date(round_any(as.POSIXct(date), 60*60*24*7*3, floor)),
+                          y = 0, yend = open_mo), size = .2, colour = "white")
+p <- p + geom_line(data = d[d$item == "Statutory Debt Limit", ],
+                   aes(x = date, y = open_mo, colour = item),
+                   size = 2, colour = "black")
+p + ylim(c(0, 2e+07)) + ggtitle("Total Public Debt Subject to Limit") + ylab("Opening Balance of Debt")
+
+dev.off()
+
+## -- now standardize with cpi
+# download from
+# http://research.stlouisfed.org/fred2/series/CPIAUCSL/downloaddata?cid=9
+d$match <- substr(as.character(d$date), 1, 7)
+
+cpi <- read.csv("CPIAUCSL.csv")
+cpi$match <- substr(as.character(cpi$DATE), 1, 7)
+
+temp <- join(data.frame(match = d$match), data.frame(match = cpi$match, value = cpi$VALUE),
+             match = "first", type = "left")
+
+d$cpi <- temp$value
+
+svg("debt_ceiling_inflation_adjusted.svg", width = 10)
+
+qplot(data = d[d$item %in% c("Statutory Debt Limit", "Total Public Debt Subject to Limit"),],
+      x = date, y = open_mo / cpi, geom = "line", colour = item, size = I(3),
+      ylab = "Total Public Debt Subject to Limit: Inflation Adjusted") +
+  theme(axis.title=element_text(face="bold.italic", size="12", color="brown"),
+        legend.position="top")
+
+dev.off()
+
+
+qplot(data = d[d$item == "Total Public Debt Subject to Limit",],#!(d$match == "2013-10" | d$match == "2013-09"),],
+      x = date, y = open_mo / cpi, geom = "line") +
+  geom_line(data = d[d$item == "Statutory Debt Limit", ],
+            aes(x = date, y = open_mo / cpi, colour = item),
+            size = 2, colour = "black")
+
+
+
+p <- ggplot(data = d[d$item == "Total Public Debt Subject to Limit: Inflation Adjusted", ],
+            aes(x = date, y = open_mo / cpi))
+p <- p + geom_line(colour = I("white")) + geom_point()
+p <- p + geom_line(data = d[d$item == "Statutory Debt Limit", ],
+                   aes(x = date, y = open_mo / cpi, colour = item),
+                   size = 2, colour = "black")
+p
+
+
+p <- p + geom_segment(aes(x = as.Date(round_any(as.POSIXct(date), 60*60*24*7*3, floor)),
+                          xend = as.Date(round_any(as.POSIXct(date), 60*60*24*7*3, floor)),
+                          y = 0, yend = open_mo), size = .2, colour = "white")
+p <- p + geom_line(data = d[d$item == "Statutory Debt Limit", ],
+                   aes(x = date, y = open_mo, colour = item),
+                   size = 2, colour = "black")
+p + ylim(c(0, 2e+07)) + ggtitle("Total Public Debt Subject to Limit") + ylab("Opening Balance of Debt")

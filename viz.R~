@@ -1,0 +1,46 @@
+#viz.R
+
+library(ggplot2)
+library(plyr)
+library(sqldf)
+
+source("./boilerplate.r")
+source("./shutdown.r")
+
+## -- just change the quotes to doublequotes
+# Error in sqliteExecStatement(con, statement, bind.data) : 
+#  RS-DBI driver: (error in statement: near "GROUP": syntax error)
+
+head(recent.transactions, 2)
+#                                                 table       date year_month
+# 1 TABLE II Deposits and Withdrawals of Operating Cash 2013-09-03    2013-09
+# 2 TABLE II Deposits and Withdrawals of Operating Cash 2013-09-03    2013-09
+#   year month day weekday                 account transaction_type parent_item
+# 1 2013     9   3 Tuesday Federal Reserve Account          deposit        <NA>
+# 2 2013     9   3 Tuesday Federal Reserve Account          deposit        <NA>
+#   is_total is_net                                 item
+# 1        0      0 Agriculture Loan Repayments ( misc )
+# 2        0      0          Air Transport Security Fees
+#                               item_raw today mtd fytd
+# 1 Agriculture Loan Repayments ( misc )    73  73 8402
+# 2          Air Transport Security Fees     9   9 2165
+#                                                                      url
+# 1 https://www.fms.treas.gov/fmsweb/viewDTSFiles?fname=13090300.txt&dir=a
+# 2 https://www.fms.treas.gov/fmsweb/viewDTSFiles?fname=13090300.txt&dir=a
+
+rt <- recent.transactions
+rm(recent.transactions)
+
+names(rt)
+#  [1] "table"            "date"             "year_month"       "year"            
+#  [5] "month"            "day"              "weekday"          "account"         
+#  [9] "transaction_type" "parent_item"      "is_total"         "is_net"          
+# [13] "item"             "item_raw"         "today"            "mtd"             
+# [17] "fytd"             "url"        
+
+sql <- 'select * from "t1" WHERE date > "2013-09-01" and account = "Federal Reserve Account"'
+d <- sqldf(sql)
+
+p <- ggplot(d, aes(x = date, y = open_today)) + geom_point() + geom_line() + geom
+
+

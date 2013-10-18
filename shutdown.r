@@ -44,8 +44,8 @@ SELECT
   "fytd",
   "url"
 FROM "t2"
-WHERE ("date" > \'2013-09-01\')
-AND ("transaction_type" = \'deposit\' OR "transaction_type" = \'withdrawal\')
+WHERE ("date" > "2013-09-01")
+AND ("transaction_type" = "deposit" OR "transaction_type" = "withdrawal")
 '
 
 recent.transactions <- sqldf(sql)
@@ -81,9 +81,9 @@ SELECT
 FROM "t2"
 WHERE
   "month" = 10 AND "day" < 4 AND
-  ("transaction_type" = \'deposit\' OR "transaction_type" = \'withdrawal\')
-ORDER BY "day" DESC
+  ("transaction_type" = "deposit" OR "transaction_type" = "withdrawal")
 GROUP BY "date"
+ORDER BY "day" DESC
 '
 
 year.start <- sqldf(sql)
