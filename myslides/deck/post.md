@@ -4,3 +4,9 @@
 
 
 [statistx](http://vizual-statistix.tumblr.com/post/62731422207/given-that-were-on-the-verge-of-a-possible)
+
+[enigma](http://labs.enigma.io/shutdown2013/)
+
+[shutdown](http://1.bp.blogspot.com/-dn6eFpBz-uM/UktPIxBV9lI/AAAAAAAAD8M/Qz7F4CmKr34/s1600/US+Government+Shutdown.png)
+
+
