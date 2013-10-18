@@ -37,4 +37,5 @@ print(sqldf('SELECt sum(today) FROM t3a_head'))
 p1 <- ggplot(t3a_head) + aes(x = date, y = today) + geom_point()
 p2 <- ggplot(t3a_head) + aes(x = today) +
   stat_bin(binwidth = 1e5, geom = 'area')
-print(p)
+print(p1)
+print(p2)
