@@ -5,4 +5,5 @@
 ## 3. A good non-data visual
 [more neat stuff](http://www.camdp.com/)
 ## 4. A bad non-data visual
-![pretty awful](http://giphy.com/gifs/QvoVCSwVdoDyU/)
+![pretty awful](http://gph.is/VwW5JG)
+[if it doesn't load](http://gph.is/VwW5JG)
