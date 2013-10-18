@@ -81,6 +81,7 @@ Also I have the open_fy which indicates for each account the opening balance for
 So to have a rough trand over the years I can get just this value for each year in the table. 
 
 I excluded the total of the accounts and I made sure to 
+Review the table below.. Starting with the same query for just one year
 
 ```{r}
 # Ok now i try to plot the different types of account per year one next to the ohter.
@@ -109,7 +110,11 @@ Please note the description of the table about the is_total and is_net:
 **is_net**: Binary flag indicating whether the item represents a net of deposits and withdrawals (1) or just deposits or withdrawals (0). Treasury presents some programs separately on both sides of the ledger but nets others together, or lists them separately but later on begins netting them together. Use this flag to disambiguate between the two.
 
 So here I need to pay more attention to execute my query.
+```{r}
+expenses_2005 <- sqldf('select  account, item, sum(today) from t2 where is_total==0 and year=2005 and transaction_type=="withdrawal" group by account, item order by fytd desc limit 20' )
 
+```
+expenses_2005 <- sqldf('select * from t2 where is_total==0 and year=2005 and transaction_type=="withdrawal" order by fytd desc limit 1000' )
 ```{r}
 # Let's try not to use SQL now but to actually use R
 expenses_crisis <- subset(t2, transaction_type=='withdrawal' & year>2008 & year<2011, select=c(date, year, item, today))
