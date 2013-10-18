@@ -1,6 +1,7 @@
+setwd("~/Zipfian/week5/government-shutdown")
 source('boilerplate.r')
 library(scales)
-
+library(plyr)
 t1$date <- as.Date(t1$date)
 t1_subset <- subset(t1, account == 'Federal Reserve Account')
 t1_subset <- subset(t1_subset, date )
@@ -13,27 +14,45 @@ str(t1_subset)
 
 t2$date <- as.Date(t2$date)
 withdrawals <-t2[(t2$transaction_type == 'withdrawal') & (t2$is_net == 0) & (t2$date > as.Date('2008-01-01')),]
-top = names(sort(table(withdrawals$item), decreasing = TRUE)[1:20])
+top = names(sort(table(withdrawals$item), decreasing = TRUE)[1:100])
 withdrawals$greatest = factor(withdrawals$item, levels = top)
 top_item_wd <- withdrawals[withdrawals[,'item']%in%top,]
 #with_great_freq <- withdrawals[withdrawals$item%in%withdrawals$greatest]
 p1 <- ggplot(top_item_wd)
 p1 <- p1 + aes(x = date, y = today, group = greatest, color = greatest) + geom_point(na.rm = TRUE)
-p1 + scale_y_log10(labels = dollar)
+p1 + scale_y_log10(labels = dollar) 
 
 top_item_wd$recent <- sapply(top_item_wd$date, function(x){if (x > as.Date('2013-08-01')) 1 else 0})
 recent_mask = top_item_wd[,'recent'] == 1
 old_mask = top_item_wd[,'recent'] == 0
 recent_agg <- aggregate(today~item, data = top_item_wd[recent_mask,], FUN = mean)
 old_agg <- aggregate(today~item, data = top_item_wd[old_mask,], FUN = mean)
-merged_agg = data.frame(Expense = c(recent_agg$item, old_agg$item), 
+added_agg = data.frame(Expense = c(recent_agg$item, old_agg$item), 
                     Amount = c(recent_agg$today, old_agg$today),
                     recent = c(rep('During Showtown',dim(recent_agg)[1]), rep('Pre Shutdown',dim(old_agg)[1])))
 
 
 
-p2 <- ggplot(merged_agg)
+p2 <- ggplot(added_agg)
 p2 <- p2 + aes(x = Expense, y = Amount, group = factor(recent), fill = factor(recent))  + geom_bar(position = 'dodge',stat = 'identity') +
-  scale_y_log10(labels = dollar) + scale_x_discrete()
+  scale_y_log10(labels = dollar) + labs(title = "Average Goverment Program Withdrawals") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 print(p2)
+
+merged_agg = merge(x = recent_agg, y = old_agg, by.x = 'item', by.y = 'item', all.y = TRUE)
+names(merged_agg) = c('item', 'recent', 'history')
+merged_agg[is.na(merged_agg)]<- 0
+merged_agg[,]
+merged_$diff = merged_agg$history - merged_agg$recent
+ggplot(merged_agg) + aes(x = item, y = diff) + geom_bar(stat = 'identity') +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+pos_names = merged_agg[merged_agg$diff > 0,'item']
+neg_names = merged_agg[merged_agg$diff <= 0,'item']
+pos_subset = top_item_wd[top_item_wd[,'item']%in%pos_names,]
+neg_subset = top_item_wd[top_item_wd[,'item']%in%neg_names,]
+ggplot(neg_subset) + aes(x = date, y = today, group = item, color = item) + geom_line() + scale_y_log10(labels = dollar)
+
+#ggsave(filename='shutdown_bar.jpg', plot = p2)
+#ggsave(filename='shutdown_point.jpg', plot = p1)
