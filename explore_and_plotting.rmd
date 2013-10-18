@@ -80,11 +80,12 @@ I have a filed which is year...
 Also I have the open_fy which indicates for each account the opening balance for fiscal year.
 So to have a rough trand over the years I can get just this value for each year in the table. 
 
+I excluded the total of the accounts and I made sure to 
 
 ```{r}
 # Ok now i try to plot the different types of account per year one next to the ohter.
-accounts <- sqldf('select distinct account, open_fy, year from t1')
-p1 <- ggplot(accounts, aes(x=year, y=open_fy, group=account, fill=account)) + geom_bar(position="dodge", stat="identity") + xlab("Year") + ylab("Amount in Milions of US dollars") + labs(title = "Opening account Balance for account type between 2005 and 2013")
+accounts <- sqldf('select distinct account, open_fy, year from t1 where is_total==0 and account <>"Total Opening Balance"')
+p1 <- ggplot(accounts, aes(x=year, y=open_fy, group=account, fill=account)) + geom_bar(position="dodge", stat="identity") + xlab("Year") + ylab("Amount in Milions of US dollars") + labs(title = "Opening balance by account type between 2005 and 2013")
 
 p2 <- p1 +  scale_y_continuous(labels = dollar) + scale_x_continuous(breaks=2005:2013)
 # Here I want to try to use the scale on Y to display the dollar
@@ -98,6 +99,40 @@ In particular notice the Supplementary Financing Program.
 Now I want  to go and see where this money went. In order to do this I want to analyze the data
 of the withdrowals of money in table2.
 
+Remeber that table t2 reports "what did Uncle Sam spend money on today, and how much"
+So le'ts have a closer look at table 2.
 
+Please note the description of the table about the is_total and is_net:
+
+**is_total**: Binary flag field indicating whether the deposit or withdrawal represents a total figure (1) or sub-component that adds up to the total (0). Exclude rows marked (1) from sum queries to prevent double-counting.
+
+**is_net**: Binary flag indicating whether the item represents a net of deposits and withdrawals (1) or just deposits or withdrawals (0). Treasury presents some programs separately on both sides of the ledger but nets others together, or lists them separately but later on begins netting them together. Use this flag to disambiguate between the two.
+
+So here I need to pay more attention to execute my query.
+
+```{r}
+# Let's try not to use SQL now but to actually use R
+expenses_crisis <- subset(t2, transaction_type=='withdrawal' & year>2008 & year<2011, select=c(date, year, item, today))
+
+#Let's have a first line plot of all this with different colors
+ggplot(expenses_crisis, aes(x=as.Date(date), y=today, group=item, colour=item)) +geom_point()
+```
+
+Clearly the granularity of the data we choose isn't great to understand what's going on.
+Let's just group the total of expense by year by type.
+```{r}
+# aggdata <-aggregate(mtcars, by=list(cyl,vs),  FUN=mean, na.rm=TRUE)
+attach(expenses_crisis)
+expenses_crisis_agg <- aggregate(expenses_crisis, by=list(year), FUN=sum)
+#expenses_crisis_agg<- aggregate(. ~ as.numeric(today), data=expenses_crisis, FUN=sum)
+```
 
 Then I want to ask: what did it change with government shoutdown in the first two weeks of October 2013?
+
+In order to answer this question I want to have a look first of all at the 
+withdrawls :
+having an average of the expenses in the years between 2005 and 2012 in those 2 weeks and
+See what have change in the first 2 weeks of OCtober.
+
+Make sure to choose the right tables and the proper filtering of results.
+
