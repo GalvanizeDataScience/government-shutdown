@@ -57,14 +57,23 @@ unzero_merged <- merged_agg[(merged_agg$recent > 0) & (merged_agg$history > 0),]
 melted <- melt(data = unzero_merged, id = 'item')
 levels = melted$item[melted$variable == 'diff'][order(melted$value[melted$variable == 'diff'])]
 melted$item <- factor(melted$item, levels = levels)
-p3 <- ggplot(melted[melted$variable != 'diff',],) +
-  aes(x=item, y =value, group = variable, color = variable) +
-  geom_line(stat = 'identity', position = 'dodge') + 
-  scale_y_log10(labels = dollar) +
+p3 <- ggplot(melted[melted$variable == 'diff',],) +
+  aes(x=item, y =value, group = variable, fill = variable) +
+  geom_bar(stat = 'identity', position = 'dodge') + 
+  scale_y_log10(breaks = c(10,100,1000,10000),labels = dollar) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 print(p3)
 
-melted$sort <- match(melted$value[melted$variable == 'diff'], sort(melted$value[melted$variable == 'diff']))
+
+unzero_merge_sort <- unzero_merged[order(unzero_merged$diff),]
+unzero_merge_sort$abs <- sapply(unzero_merge_sort$diff, function(x) {if (x <= 0) 1 else 0})
+unzero_merge_sort$diff <- sapply(unzero_merge_sort$diff, function(x) {if (x <= 0) abs(x) else x})
+p3 <- ggplot(unzero_merge_sort) +
+  aes(x=item, y =diff, group = abs, fill = factor(abs)) +
+  geom_bar(stat = 'identity', position = 'dodge') + 
+  scale_y_log10(breaks = c(10,100,1000,10000),labels = dollar) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+print(p3)
 
 
 pos_names = merged_agg[merged_agg$diff > 0,'item']
