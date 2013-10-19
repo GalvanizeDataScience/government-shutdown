@@ -69,7 +69,7 @@ unzero_merge_sort <- unzero_merged[order(unzero_merged$diff),]
 unzero_merge_sort$abs <- sapply(unzero_merge_sort$diff, function(x) {if (x <= 0) 1 else 0})
 unzero_merge_sort$diff <- sapply(unzero_merge_sort$diff, function(x) {if (x <= 0) abs(x) else x})
 p3 <- ggplot(unzero_merge_sort) +
-  aes(x=item, y =diff, group = abs, fill = factor(abs)) +
+  aes(x=factor(item, levels = unique(item)), y =diff, group = abs, fill = factor(abs)) +
   geom_bar(stat = 'identity', position = 'dodge') + 
   scale_y_log10(breaks = c(10,100,1000,10000),labels = dollar) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
