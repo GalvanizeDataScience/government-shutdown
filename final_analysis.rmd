@@ -1,20 +1,11 @@
-Exploring the Governement shutdown data
+Exploring Governement government's finances 
 ========================================================
 
-Let's start with trying to make sense of data...
-From Toms' script I knwo that e have 3 tables:
-t1 t4 and t3a.
+In order to understand the data i had at hand I started with the first table 
+reading the documentaiton.
+Table t1 explains "how much money does Uncle Sam have in his checking account on any given day""
 
-t1 seems to be the operating cash balance
-t4 is the Federal Tax deposit
-t3 is the Public Dept transaction.
-
-Rememebr is always good to read any doc availble that explains the data:
-from the documentation:
-T1 explains "how much money does Uncle Sam have in his checking account on any given day""
-
-Now I want to explore a little bit the data.
-TO chekc if they have the same data range for instance. Let's use some SQL.
+I wanted to build a simple cumulative view of the the amount of money in each account at the beginnig fo the fiscal year for the time frame we had at our disposal.
 
 ```{r}
 library(sqldf)
@@ -40,58 +31,24 @@ print(sqldf('SELECT MAX(date) FROM t1;'))
 brewerplot <- function (palette) {
 p + scale_fill_brewer(palette = palette) + opts(title=palette)
 }
-brewerplot ("Pastel1")
 ```
 
-So we have data from 2005 until 2013.
-Hopefull we will have the same date range in all the tables.
-Let's check for isntance table 2
+
+Let's see the trend of the amount of money in the Federal Reserve account from 2008
 ```{r}
-# Let's try to experiment with some queries..
-print ("Min date in T4")
-print(sqldf("SELECT MIN(date) FROM t4;"))
-print ("Max date in T4")
-print(sqldf("SELECT MAX(date) FROM t4;"))
-```
 
-So it seems we have the same date range.
-So in T1 we have the type of accounts for operating cash balance.
-These are under the column:
-account or account row. Let's check the variosu types of accounts
-
-
-```{r}
-sql<- 'SELECT DISTINCT account from t1;'
-print(sqldf(sql))
-```
-
-Now Let's plot the trend across the last 5 years
-```{r}
 # Let's get the data first
-sql <- 'select * from t1 where account ="Federal Reserve Account" and date > "2011-01-01"'
+sql <- 'select * from t1 where account ="Federal Reserve Account" and date > "2008-01-01"'
 federal_account_trend = sqldf(sql)
 # Let's transform the dates in date
 federal_account_trend$date <- as.Date(federal_account_trend$date)
 # Let's plot and ad some axis
-ggplot(federal_account_trend, aes(x = date, y=open_today)) + geom_line()
+ggplot(federal_account_trend, aes(x = as.Date(date), y=open_today, color=account)) + geom_line() + xlab("Year") + ylab("Amount in Milions of US dollars") + labs(title = "Money in the Federal Reserve Account") +  scale_y_continuous(labels = dollar)
 ```
 
-```{r}
-sql <- 'select * from "t1" where date > "2013-09-01" and account = "Federal Reserve Account"'
-d <- sqldf(sql)
-qplot(x = date, y = open_today, data = d, geom = "point")
-```
-
-Ok let's try now ti have acomulative sum per year and visualize it as a barpolt
-I have a filed which is year...
-Also I have the open_fy which indicates for each account the opening balance for fiscal year.
-So to have a rough trand over the years I can get just this value for each year in the table. 
-
-I excluded the total of the accounts and I made sure to 
-Review the table below.. Starting with the same query for just one year
+What I wantd to plot next was the amount of money per type of account at the beginning of each fiscal year from 2005 through 2013.
 
 ```{r}
-# Ok now i try to plot the different types of account per year one next to the ohter.
 accounts <- sqldf('select distinct account, open_fy, year from t1 where is_total==0 and account <>"Total Opening Balance"')
 p1 <- ggplot(accounts, aes(x=year, y=open_fy, group=account, fill=account)) + geom_bar(position="dodge", stat="identity") + xlab("Year") + ylab("Amount in Milions of US dollars") + labs(title = "Opening balance by account type between 2005 and 2013")
 
@@ -104,43 +61,32 @@ p2
 We can notice during the 2008-2011 the start fo the Supplementing financing program
 and the drop in the Tax and Loan Note accounts.
 
-See this:
+For more info see this:
 (Supplementing financing program)[http://www.pyramis.com/fileadmin/templates/pyramis_public/downloads/us/unwinding_the_SFP_WP_Nov_2010.pdf]
 
+I was also interested in seeing more closeley the trend of the Tax and Loan Note Account. This is an account in a "private-sector depository institution, held in the name of the district Federal Reserve Bank as fiscal agent of the United States, that serves as a repository for operating cash available to the U.S. Treasury. Withheld income taxes, employers’ contributions to the Social Security fund, and payments for U.S. government securities routinely go into a tax and loan account.""
 
-Seeing the strange trends between 2008 and 2011 I wnted to go and and answer 
-this question: whhat changes in the expenses we cna notice between 2008 and 2011?
+("An account at a bank where a Federal Reserve bank deposits taxes that it receives from individual and corporate taxpayers. This increases the liquidity of the banks with the TT&L accounts; this in turn keeps the banking system stable.")[http://www.answers.com/topic/tax-and-loan-account#ixzz2i839QzWQ]
 
-Please note the description of the table about the is_total and is_net:
 
-**is_total**: Binary flag field indicating whether the deposit or withdrawal represents a total figure (1) or sub-component that adds up to the total (0). Exclude rows marked (1) from sum queries to prevent double-counting.
-
-**is_net**: Binary flag indicating whether the item represents a net of deposits and withdrawals (1) or just deposits or withdrawals (0). Treasury presents some programs separately on both sides of the ledger but nets others together, or lists them separately but later on begins netting them together. Use this flag to disambiguate between the two.
-
-So here I need to pay more attention to execute my query.
 ```{r}
-# The query below works
-expenses_2005_total <- sqldf('select date, account, item, today from t2 where is_total==0 and year=2005 and transaction_type=="withdrawal"' )
+sql <- 'select * from t1 where account ="Tax and Loan Note Accounts ( Table V )" and date > "2008-01-01"'
+tax_account_trend = sqldf(sql)
 
-expenses_2005 <- sqldf('select  account, item, sum(today) as total from t2 where is_total==0 and year=2005 and transaction_type=="withdrawal" group by account, item order by fytd desc limit 20' )
+# Let's plot and ad some axis
+ggplot(tax_account_trend, aes(x = as.Date(date), y=open_today, color=account)) + geom_line() + xlab("Year") + ylab("Amount in Milions of US dollars") + labs(title = "Money in the Tax and Loan Note Accounts") +  scale_y_continuous(labels = dollar)
 
-# Now let's get the data we are interesred in
-# There is certaintly a better way to do this within a for loop
-expenses_2008 <- sqldf('select  account, item, sum(today) as total from t2 where is_total==0 and year=2008 and transaction_type=="withdrawal" group by account, item order by fytd desc limit 20' )
-
-expenses_2009 <- sqldf('select  account, item, sum(today) as total from t2 where is_total==0 and year=2009 and transaction_type=="withdrawal" group by account, item order by fytd desc limit 20' )
-
-expenses_2010 <- sqldf('select  account, item, sum(today) as total from t2 where is_total==0 and year=2010 and transaction_type=="withdrawal" group by account, item order by fytd desc limit 20' )
-
-expenses_2011 <- sqldf('select  account, item, sum(today) as total from t2 where is_total==0 and year=2011 and transaction_type=="withdrawal" group by account, item order by fytd desc limit 20' )
 ```
-Ok I notice that i have some  terms like Public Dept Cash redempt and Transfers to Federla FOunding that I didnt' want..
-SO let's filter these out and let's make sure I remove also any row with NA in the 
-```{r}
-expenses_2005 <- sqldf('select  account, item, sum(today) as total from t2 where is_total==0 and year=2005 and transaction_type=="withdrawal" and item not in ("Public Debt Cash Redemp ( Table III B )", "Transfers to Federal Reserve Account Table V") group by account, item order by fytd desc limit 10' )
 
-# Now let's get the data we are interesred in
-# There is certaintly a better way to do this within a for loop
+At this point I was curious to see how the money were spent during the financial crisis in particular looking for any significnat change in the expenses before and after 2008.
+
+```{r}
+expenses_2005 <- sqldf('select  year, account, item, sum(today) as total from t2 where is_total==0 and year=2005 and transaction_type=="withdrawal" and item not in ("Public Debt Cash Redemp ( Table III B )", "Transfers to Federal Reserve Account Table V", "Transfers to Depositaries") group by account, item order by fytd desc limit 10' )
+
+expenses_2006 <- sqldf('select  year, account, item, sum(today) as total from t2 where is_total==0 and year=2006 and transaction_type=="withdrawal" and item not in ("Public Debt Cash Redemp ( Table III B )", "Transfers to Federal Reserve Account Table V", "Transfers to Depositaries") group by account, item order by fytd desc limit 10' )
+
+expenses_2007 <- sqldf('select  year, account, item, sum(today) as total from t2 where is_total==0 and year=2007 and transaction_type=="withdrawal" and item not in ("Public Debt Cash Redemp ( Table III B )", "Transfers to Federal Reserve Account Table V", "Transfers to Depositaries") group by account, item order by fytd desc limit 10' )
+
 expenses_2008 <- sqldf('select year, account, item, sum(today) as total from t2 where is_total==0 and year=2008 and transaction_type=="withdrawal" and item not in ("Public Debt Cash Redemp ( Table III B )", "Transfers to Federal Reserve Account Table V", "Transfers to Depositaries") group by account, item order by fytd desc limit 10' )
 
 expenses_2009 <- sqldf('select year, account, item, sum(today) as total from t2 where is_total==0 and year=2009 and transaction_type=="withdrawal" and item not in ("Public Debt Cash Redemp ( Table III B )", "Transfers to Federal Reserve Account Table V", "Transfers to Depositaries") group by account, item order by fytd desc limit 10' )
@@ -152,11 +98,34 @@ expenses_2011 <- sqldf('select year, account, item, sum(today) as total from t2 
 ```
 
 ```{r}
+
+# Now let's plot this in some meaningful graph let's start with 2008
+expenses_2005 <- expenses_2005[complete.cases(expenses_2005),]
+#sort_expenses_2008 <- expenses_2008[order(expenses_2008$total, decreasing = TRUE) , ]
+expenses_2005 <- transform(expenses_2005, item = reorder(item, total))
+exp_2005 <- ggplot(expenses_2005, aes(x=item, y=total, fill=account)) + geom_bar(stat="identity") + xlab("Expense Type") + ylab("Amount in Milions of US dollars") + labs(title = "Top Category Expenses in 2005") + theme(axis.text.x = element_text(angle = 90, hjust = 1, size=12)) + theme(axis.text.y = element_text(hjust = 1, size=12)) + scale_y_continuous(labels = dollar) +  coord_flip()
+exp_2005
+
+# Now let's plot this in some meaningful graph let's start with 2008
+expenses_2006 <- expenses_2006[complete.cases(expenses_2006),]
+#sort_expenses_2008 <- expenses_2008[order(expenses_2008$total, decreasing = TRUE) , ]
+expenses_2006 <- transform(expenses_2006, item = reorder(item, total))
+exp_2006 <- ggplot(expenses_2006, aes(x=item, y=total, fill=account)) + geom_bar(stat="identity") + xlab("Expense Type") + ylab("Amount in Milions of US dollars") + labs(title = "Top Category Expenses in 2006") + theme(axis.text.x = element_text(angle = 90, hjust = 1, size=12)) + theme(axis.text.y = element_text(hjust = 1, size=12)) + scale_y_continuous(labels = dollar) +  coord_flip()
+exp_2006
+
+
+# Now let's plot this in some meaningful graph let's start with 2008
+expenses_2007 <- expenses_2007[complete.cases(expenses_2007),]
+#sort_expenses_2008 <- expenses_2008[order(expenses_2008$total, decreasing = TRUE) , ]
+expenses_2007 <- transform(expenses_2007, item = reorder(item, total))
+exp_2007 <- ggplot(expenses_2007, aes(x=item, y=total, fill=account)) + geom_bar(stat="identity") + xlab("Expense Type") + ylab("Amount in Milions of US dollars") + labs(title = "Top Category Expenses in 2007") + theme(axis.text.x = element_text(angle = 90, hjust = 1, size=12)) + theme(axis.text.y = element_text(hjust = 1, size=12)) + scale_y_continuous(labels = dollar) +  coord_flip()
+exp_2007
+
 # Now let's plot this in some meaningful graph let's start with 2008
 expenses_2008 <- expenses_2008[complete.cases(expenses_2008),]
 #sort_expenses_2008 <- expenses_2008[order(expenses_2008$total, decreasing = TRUE) , ]
 expenses_2008 <- transform(expenses_2008, item = reorder(item, total))
-exp_2008 <- ggplot(expenses_2008, aes(x=item, y=total, fill=account)) + geom_bar() + xlab("Expense Type") + ylab("Amount in Milions of US dollars") + labs(title = "Expenses  in 2008") + theme(axis.text.x = element_text(angle = 90, hjust = 1, size=12)) + theme(axis.text.y = element_text(hjust = 1, size=12)) + scale_y_continuous(labels = dollar) +  coord_flip()
+exp_2008 <- ggplot(expenses_2008, aes(x=item, y=total, fill=account)) + geom_bar(stat="identity") + xlab("Expense Type") + ylab("Amount in Milions of US dollars") + labs(title = "Top Category Expenses in 2008") + theme(axis.text.x = element_text(angle = 90, hjust = 1, size=12)) + theme(axis.text.y = element_text(hjust = 1, size=12)) + scale_y_continuous(labels = dollar) +  coord_flip()
 exp_2008
 
 # Now I just ant to have the legend be nicer but for now let's just don't worry about
@@ -165,45 +134,47 @@ exp_2008
 expenses_2009 <- expenses_2009[complete.cases(expenses_2009),]
 
 expenses_2009 <- transform(expenses_2009, item = reorder(item, total))
-exp_2009 <- ggplot(expenses_2009[1:10,], aes(x=item, y=total, fill=account)) + geom_bar() + xlab("Expense Type") + ylab("Amount in Milions of US dollars") + labs(title = "Expenses  in 2009") + theme(axis.text.x = element_text(angle = 90, hjust = 1, size=12)) + theme(axis.text.y = element_text(hjust = 1, size=12)) + scale_y_continuous(labels = dollar) +  coord_flip()
+exp_2009 <- ggplot(expenses_2009, aes(x=item, y=total, fill=account)) + geom_bar(stat="identity") + xlab("Expense Type") + ylab("Amount in Milions of US dollars") + labs(title = "Top category Expenses in 2009") + theme(axis.text.x = element_text(angle = 90, hjust = 1, size=12)) + theme(axis.text.y = element_text(hjust = 1, size=12)) + scale_y_continuous(labels = dollar) +  coord_flip()
 exp_2009
 
 
 expenses_2010 <- expenses_2010[complete.cases(expenses_2010),]
 
 expenses_2010 <- transform(expenses_2010, item = reorder(item, total))
-exp_2010 <- ggplot(expenses_2010, aes(x=item, y=total, fill=account)) + geom_bar() + xlab("Expense Type") + ylab("Amount in Milions of US dollars") + labs(title = "Expenses  in 2010") + theme(axis.text.x = element_text(angle = 90, hjust = 1, size=12)) + theme(axis.text.y = element_text(hjust = 1, size=12)) + scale_y_continuous(labels = dollar) +  coord_flip()
+exp_2010 <- ggplot(expenses_2010, aes(x=item, y=total, fill=account)) + geom_bar(stat="identity") + xlab("Expense Type") + ylab("Amount in Milions of US dollars") + labs(title = "Top Category Expenses in 2010") + theme(axis.text.x = element_text(angle = 90, hjust = 1, size=12)) + theme(axis.text.y = element_text(hjust = 1, size=12)) + scale_y_continuous(labels = dollar) +  coord_flip()
 exp_2010
 
 expenses_2011 <- expenses_2011[complete.cases(expenses_2011),]
 
 expenses_2011 <- transform(expenses_2011, item = reorder(item, total))
-exp_2011 <- ggplot(expenses_2011, aes(x=item, y=total, fill=account)) + geom_bar() + xlab("Expense Type") + ylab("Amount in Milions of US dollars") + labs(title = "Expenses  in 2011") + theme(axis.text.x = element_text(angle = 90, hjust = 1, size=12)) + theme(axis.text.y = element_text(hjust = 1, size=12)) + scale_y_continuous(labels = dollar) +  coord_flip()
+exp_2011 <- ggplot(expenses_2011, aes(x=item, y=total, fill=account)) + geom_bar(stat="identity") + xlab("Expense Type") + ylab("Amount in Milions of US dollars") + labs(title = "Expenses  in 2011") + theme(axis.text.x = element_text(angle = 90, hjust = 1, size=12)) + theme(axis.text.y = element_text(hjust = 1, size=12)) + scale_y_continuous(labels = dollar) +  coord_flip()
 exp_2011
+
+# Now I want to compare 2005 - 2008
+expenses_05_06 <- rbind(expenses_2005, expenses_2006) 
+expenses_05_06_07 <- rbind(expenses_05_06, expenses_2007)
+expenses_05_08 <- rbind(expenses_05_06_07, expenses_2008)
+comulative_top_expenses_05_08 <-ggplot(expenses_05_08, aes(x=item, y = total,fill=item)) + geom_bar(stat="identity") +facet_wrap(~ year)  + scale_y_continuous(labels = dollar)  + coord_flip() + xlab("Expense Type") + ylab("Amount in Milions of US dollars") + labs(title = "Top Category Expenses (2005-2008)")
+comulative_top_expenses_05_08
 # Let's try with the merging still it doesnt' work.
 # Let's try to figure this out later 
 # Now I want to show all this in the same order 
 expenses_08_09 <- rbind(expenses_2008, expenses_2009) 
 expenses_08_09_10 <- rbind(expenses_08_09, expenses_2010)
 expenses_08_11 <- rbind(expenses_08_09_10, expenses_2011)
-comulative_top_expenses <-ggplot(expenses_08_11, aes(x=item, y = total,fill=item)) + geom_bar() +facet_wrap(~ year)  + scale_y_continuous(labels = dollar) + theme(axis.text.x =element_text(size=11))  + coord_flip()
+comulative_top_expenses <-ggplot(expenses_08_11, aes(x=item, y = total,fill=item)) + geom_bar(stat="identity") +facet_wrap(~ year)  + scale_y_continuous(labels = dollar) + coord_flip()  + xlab("Expense Type") + ylab("Amount in Milions of US dollars") + labs(title = "Top Category Expenses (2008-2011)")
 comulative_top_expenses
 
 # I may want to try later on to visualize one on top of the other...
 
 ```
 
-Then I want to ask: what did it change with government shoutdown in the first two weeks of October 2013?
+SO and now we came to the govrnement shotdown>
 
-In order to answer this question I want to have a look first of all at the 
-withdrawls: having an average of the expenses in the years between 2005 and 2012 in those 2 weeks and
-See what have change in the first 2 weeks of October.
+Then I want to ask: who didn't get paid with government shoutdown in the first two weeks of October 2013?
 
-Make sure to choose the right tables and the proper filtering of results.
+Let's try to figure out who didn't withdraw money in the first two weeks.
 
-So now I want just to have a sense of which expenses were cut in the first two weeks of
-October.
-I want first have a look at some other years and have what was paid there.
 ```{r}
 # October 2012
 expenses_october_2012 <- sqldf('select  date, account, item, today  from t2 where is_total==0 and year=2012 and transaction_type=="withdrawal" and item not in ("Public Debt Cash Redemp ( Table III B )", "Transfers to Federal Reserve Account Table V", "Transfers to Depositaries") and month=10 and day<16' )
@@ -211,9 +182,8 @@ expenses_october_2012 <- sqldf('select  date, account, item, today  from t2 wher
 expenses_october_2012 <- expenses_october_2012[complete.cases(expenses_october_2012),]
 # Also I want to get rid of every value that is 0 or below ) 
 expenses_october_2012_pos <- subset(expenses_october_2012, today > 0)
-exp_oct_2012 <- ggplot(expenses_october_2012_pos, aes(x=as.Date(date), y=today)) + geom_point(aes(colour=item)) 
+exp_oct_2012 <- ggplot(expenses_october_2012_pos, aes(x=as.Date(date), y=today)) + geom_point(aes(colour=item))  + scale_y_continuous(labels = dollar)  + xlab("Date") + ylab("Amount in Milions of US dollars") + labs(title = "Item paid by the governement Oct 1-15 2012")
 exp_oct_2012
-
 
 
 # October 2013
@@ -222,7 +192,7 @@ expenses_october_2013 <- sqldf('select  date, account, item, today  from t2 wher
 expenses_october_2013 <- expenses_october_2013[complete.cases(expenses_october_2013),]
 # Also I want to get rid of every value that is 0 or below ) 
 expenses_october_2013_pos <- subset(expenses_october_2013, today > 0)
-exp_oct_2013 <- ggplot(expenses_october_2013_pos, aes(x=as.Date(date), y=today)) + geom_point(aes(colour=item)) 
+exp_oct_2013 <- ggplot(expenses_october_2013_pos, aes(x=as.Date(date), y=today)) + geom_point(aes(colour=item))  + scale_y_continuous(labels = dollar)  + xlab("Date") + ylab("Amount in Milions of US dollars") + labs(title = "Item paid by the governement Oct 1-15 2013")
 exp_oct_2013
 
 
@@ -239,8 +209,7 @@ exp_sept_2013
 
 ```
 
-In this way we can't see any while grouping per 
-expense type.
+It's hard to understand. Let's try to group it.
 
 
 ```{r}
@@ -253,11 +222,11 @@ oct_2012_exp_sum <- sqldf('select  date, account, item, sum(today) as total  fro
 pos_oct_2013 <- subset(oct_2013_exp_sum, total > 0)
 pos_oct_2012 <- subset(oct_2012_exp_sum, total > 0)
 
-g_oct_2013 <- ggplot(pos_oct_2013, aes(x=item, y=total)) + geom_bar(stat="identity") + theme(axis.text.x = element_text(angle = 90, hjust = 1, size=12)) + theme(axis.text.y = element_text(hjust = 1, size=12))
+g_oct_2013 <- ggplot(pos_oct_2013, aes(x=item, y=total)) + geom_bar(stat="identity", aes(fill=item)) + theme(axis.text.x = element_text(angle = 90, hjust = 1, size=12)) + theme(axis.text.y = element_text(hjust = 1, size=12))  + xlab("Date") + ylab("Amount in Milions of US dollars") + labs(title = "Item paid by the governement Oct 1-15 2013")+ coord_flip() 
 g_oct_2013
 
 
-g_oct_2012 <- ggplot(pos_oct_2012, aes(x=item, y=total)) + geom_bar() + theme(axis.text.x = element_text(angle = 90, hjust = 1, size=12)) + theme(axis.text.y = element_text(hjust = 1, size=12))
+g_oct_2012 <- ggplot(pos_oct_2012, aes(x=item, y=total)) + geom_bar(stat="identity", aes(fill=item)) + theme(axis.text.x = element_text(angle = 90, hjust = 1, size=12)) + theme(axis.text.y = element_text(hjust = 1, size=12)) + xlab("Date") + ylab("Amount in Milions of US dollars") + labs(title = "Item paid by the governement Oct 1-15 2013")+ coord_flip() 
 g_oct_2012
 ```
 
@@ -332,13 +301,10 @@ Here we have the actual number fo the 7 voices that weren't paid during the shut
 Let's now plot the daily plot for this 7 in the currrent year
 (Then I can also compare wiht the previous year looking at what was going on on OCtober 2013)
 ```{r}
-# Just plot the data for 
-shutdown_withd <- t2[t2$item %in% c("Emergency Prep Response ( DHS )", "Federal Financing Bank", "Treasury Department programs", "Foreign Military Sales Program", "Commerce Programs", "Federal Transit Admin", "Deposit Insurance Fund","State Department"), ] 
-
 shutdn_with <- sqldf('select date, today, item from t2 where is_total==0 and year=2013 and transaction_type=="withdrawal" and month in (9,10) and item in ("Emergency Prep Response ( DHS )", "Federal Financing Bank", "Treasury Department programs", "Foreign Military Sales Program", "Commerce Programs", "Federal Transit Admin", "Deposit Insurance Fund","State Department")')
 
 # Let's plot this now.
-plot_drop <- ggplot(shutdn_with) + aes(x=as.Date(date), y=today, colour=item) +geom_line()
+plot_drop <- ggplot(shutdn_with) + aes(x=as.Date(date), y=today, colour=item) +geom_point() + geom_line() + xlab("Date") + ylab("Amount in Milions of US dollars") + labs(title = "Amount paid for the categories affected by the shutdown in 2013")
 plot_drop
 ```
 Now let's see instead what was the trend in the timeframe of last year.
@@ -346,8 +312,8 @@ Now let's see instead what was the trend in the timeframe of last year.
 shutdn_compare <- sqldf('select date, today, item from t2 where is_total==0 and year=2012 and transaction_type=="withdrawal"and month in (9,10) and item in ("Emergency Prep Response ( DHS )", "Federal Financing Bank", "Treasury Department programs", "Foreign Military Sales Program", "Commerce Programs", "Federal Transit Admin", "Deposit Insurance Fund","State Department")')
 
 # Let's plot this now.
-plot_drop <- ggplot(shutdn_compare) + aes(x=as.Date(date), y=today, colour=item) +geom_line()
-plot_drop
+plot_drop_2012 <- ggplot(shutdn_compare) + aes(x=as.Date(date), y=today, colour=item) +geom_line()+ geom_line() + xlab("Date") + ylab("Amount in Milions of US dollars") + labs(title = "Amount paid for the categories affected by the shutdown in 2012")
+plot_drop_2012
 ```
 
 In order to better understamd the trend let's remove the State department.
@@ -355,8 +321,8 @@ In order to better understamd the trend let's remove the State department.
 shutdn_compare_no_state <- sqldf('select date, today, item from t2 where is_total==0 and year=2012 and transaction_type=="withdrawal"and month in (9,10) and item in ("Emergency Prep Response ( DHS )", "Federal Financing Bank", "Treasury Department programs", "Foreign Military Sales Program", "Commerce Programs", "Federal Transit Admin", "Deposit Insurance Fund")')
 
 # Let's plot this now.
-plot_drop <- ggplot(shutdn_compare_no_state) + aes(x=as.Date(date), y=today, colour=item) +geom_line()
-plot_drop
+plot_drop_no_state <- ggplot(shutdn_compare_no_state) + aes(x=as.Date(date), y=today, colour=item) +geom_line() + geom_line() + xlab("Date") + ylab("Amount in Milions of US dollars") + labs(title = "Amount paid for the categories affected by the shutdown in 2012")
+plot_drop_no_state
 ```
 
 
