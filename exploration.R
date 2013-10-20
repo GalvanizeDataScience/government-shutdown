@@ -32,14 +32,32 @@ unzero_merge_sort1 <- split_merge_diff(top_item_wd = top_item_wd, date1 = as.Dat
                                        date2 = as.Date('2012-09-15'),
                                        date3 = as.Date('2011-08-15'),
                                        date4 = as.Date('2011-09-15'))
+unzero_merge_sort2 <- split_merge_diff(top_item_wd = top_item_wd, date1 = as.Date('2013-08-15'),
+                                       date2 = as.Date('2013-09-15'),
+                                       date3 = as.Date('2012-08-15'),
+                                       date4 = as.Date('2012-09-15'))
+unzero_merge_sort3 <- split_merge_diff(top_item_wd = top_item_wd, date1 = as.Date('2011-08-15'),
+                                       date2 = as.Date('2011-09-15'),
+                                       date3 = as.Date('2010-08-15'),
+                                       date4 = as.Date('2010-09-15'))
 
 
-p3 <- ggplot(unzero_merge_sort1) +
+get_rid <- c("Public Debt Cash Redemp ( Table III B )","Total Federal Reserve Account" ,
+             "Total Withdrawals ( excluding transfers )" )
+p3 <- ggplot(unzero_merge_sort1[!(unzero_merge_sort1$item %in% get_rid),]) +
   aes(x=factor(item, levels = unique(item)), y =diff, group = abs, fill = factor(abs)) +
   geom_bar(stat = 'identity', position = 'dodge') + 
   scale_y_log10(breaks = c(10,100,1000,10000),labels = dollar) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 print(p3)
+
+p4 <- ggplot(unzero_merge_sort1[!(unzero_merge_sort2$item %in% get_rid),]) +
+  aes(x=factor(item, levels = unique(item)), y =diff, group = abs, fill = factor(abs)) +
+  geom_bar(stat = 'identity', position = 'dodge') + 
+  scale_y_log10(breaks = c(10,100,1000,10000),labels = dollar) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+print(p4)
+
 
 
 pos_names = merged_agg[merged_agg$diff > 0,'item']

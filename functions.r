@@ -28,13 +28,9 @@ split_merge_diff <- function(top_item_wd, date1, date2, date3, date4){
   
   unzero_merged <- merged_agg[(merged_agg$recent > 0) & (merged_agg$history > 0),]
   
-  # melted <- melt(data = unzero_merged, id = 'item')
-  # levels = melted$item[melted$variable == 'diff'][order(melted$value[melted$variable == 'diff'])]
-  # melted$item <- factor(melted$item, levels = levels)
-  
   
   unzero_merge_sort <- unzero_merged[order(unzero_merged$diff),]
   unzero_merge_sort$abs <- sapply(unzero_merge_sort$diff, function(x) {if (x <= 0) 1 else 0})
   unzero_merge_sort$diff <- sapply(unzero_merge_sort$diff, function(x) {if (x <= 0) abs(x) else x})
-  return(unzero_merge_sort)
+  return(list(unzero_merge_sort,old_mask, recent_mask))
 }
