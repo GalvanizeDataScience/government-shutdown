@@ -7,7 +7,7 @@ library(reshape2)
 
 t1$date <- as.Date(t1$date)
 t1_subset <- subset(t1, account == 'Federal Reserve Account')
-t1_subset <- subset(t1_subset, date )
+t1_subset <- subset(t1_subset, date > as.Date('2008-01-1'))
 # t1_subset[,'color'] <- NA
 t1_subset$recent <- sapply(t1_subset$date, function(x){if (x > as.Date('2013-08-01')) 1 else 0})
 
@@ -50,8 +50,6 @@ merged_agg = merge(x = recent_agg, y = old_agg, by.x = 'item', by.y = 'item', al
 names(merged_agg) = c('item', 'recent', 'history')
 merged_agg[is.na(merged_agg)]<- 0
 merged_agg$diff = merged_agg$history - merged_agg$recent
-ggplot(merged_agg) + aes(x = item, y = diff) + geom_bar(stat = 'identity') +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) + scale_y_log10()
 
 unzero_merged <- merged_agg[(merged_agg$recent > 0) & (merged_agg$history > 0),]
 melted <- melt(data = unzero_merged, id = 'item')
