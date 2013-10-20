@@ -226,17 +226,21 @@ g_oct_2013 <- ggplot(pos_oct_2013, aes(x=item, y=total)) + geom_bar(stat="identi
 g_oct_2013
 
 
-g_oct_2012 <- ggplot(pos_oct_2012, aes(x=item, y=total)) + geom_bar(stat="identity", aes(fill=item)) + theme(axis.text.x = element_text(angle = 90, hjust = 1, size=12)) + theme(axis.text.y = element_text(hjust = 1, size=12)) + xlab("Date") + ylab("Amount in Milions of US dollars") + labs(title = "Item paid by the governement Oct 1-15 2013")+ coord_flip() 
+g_oct_2012 <- ggplot(pos_oct_2012, aes(x=item, y=total)) + geom_bar(stat="identity", aes(fill=item)) + theme(axis.text.x = element_text(angle = 90, hjust = 1, size=12)) + theme(axis.text.y = element_text(hjust = 1, size=12)) + xlab("Date") + ylab("Amount in Milions of US dollars") + labs(title = "Item paid by the governement Oct 1-15 2012")+ coord_flip() 
 g_oct_2012
 ```
 
 Well besides the value one thing is clear:
 There are "less" items that were paid on the first half of OCtober 2013 wrt the same time frame of the past year.
 
-Let's see which items were left out:
+Let's see which items were left out comparing the payment for the first 2 weeks of October  between 2012 ans 2013.
+Below We have the items that were paid on 2012 that weren't paid in 2013.
+
 ```{r}
 exp_2012 <- data.frame(expenses_october_2012) 
 items_2012 <- exp_2012$item
+
+# Remember setdiff (x,y) returns element that are in X but not in Y
 
 exp_2013 <- data.frame(expenses_october_2013) 
 items_2013 <- exp_2013$item
@@ -244,16 +248,9 @@ lost_items_oct_12_13 <- setdiff(items_2012, items_2013)
 lost_items_oct_12_13
 
 ```
-These are the different items:
- [1] "Emergency Prep Response ( DHS )"    "Federal Crop Ins Corp"             
- [3] "Federal Financing Bank"             "International Monetary Fund"       
- [5] "Treasury Department programs"       "Foreign Military Sales Program"    
- [7] "Commerce Programs"                  "Federal Transit Admin"             
- [9] "Treasury Dept: Claims Payments"     "Agriculture Loan Payments ( misc )"
-[11] "Deposit Insurance Fund"             "State Department"  
+
 Well can this just be a coincidence?
-Let's compare the first half of the month of semptember and see if we get 
-the same significant difference.
+Let's compare the first half of the month of semptember between 2012 and 2013  and see which difference we get.
 
 ```{r}
 
@@ -271,28 +268,34 @@ expenses_september_2013 <- expenses_september_2013[complete.cases(expenses_septe
 expenses_september_2013_pos <- subset(expenses_september_2013, today > 0)
 
 # Compare now the first half of September 2012 with September2013
-unique(expenses_sept_2013_pos$item)
-unique(expenses_september_2012_pos$item)
+# unique(expenses_sept_2013_pos$item)
+# unique(expenses_september_2012_pos$item)
 ```
-Well we have 45 and 50. A difference of 5.
-Let's see what are the 
+
+Items paid in September 2013 that weren't paid in Sept 2012:
 ```{r}
 # See diff between sept 2012 and sept 2013
-sept12_13_lost_items <- setdiff(expenses_sept_2012_pos$item, expenses_september_2013_pos$item)
+sept12_13_lost_items <- setdiff(expenses_september_2013_pos$item, expenses_september_2012_pos$item)
 sept12_13_lost_items
 ```
-[1] "Net Change in Operating Cash Balance" "Federal Aviation Administration"     
-[3] "Federal Crop Ins Corp"                "International Monetary Fund"         
-[5] "Small Business Administration"        "Treasury Dept: Claims Payments"      
-[7] "Agriculture Loan Payments ( misc )"   "Export Import Bank" 
 
-Let's now compare these values with our previous difference
+Items paid in September 2012 that weren't paid in Sept 2013:
+```{r}
+sept12vs_2013 <- setdiff(expenses_september_2012_pos$item, expenses_september_2013_pos$item)
+sept12vs_2013
+```
+Se here the difference is just 2...
+Not really somethign significant..
+
+Let's now compare what was dropped between oct 12 and 13 with what was dropped between sept 2012 and sept 2013.
+
+
 ```{r}
 setdiff(lost_items_oct_12_13, sept12_13_lost_items)
 
 ```
 
-Here we have the actual number fo the 7 voices that weren't paid during the shutdwon
+Here we have 7 voices that weren't paid dring the shutdown.
 [1] "Emergency Prep Response ( DHS )" "Federal Financing Bank"         
 [3] "Treasury Department programs"    "Foreign Military Sales Program" 
 [5] "Commerce Programs"               "Federal Transit Admin"          
