@@ -48,7 +48,7 @@ sql <- 'select * from "t1" where date > "2012-10-01" and account = "Federal Rese
 d <- sqldf(sql)
 d$date <- as.Date(d$date)
 
-svg("operating_cash_balance.svg", width = 10)
+svg("operating_cash_balance.svg", height = 7, width = 12)
 
 p <- ggplot(d, aes(x = date, y = close_today))
 p <- p + geom_area(fill = "skyblue1", alpha = .5) + geom_line(colour = "black", size = 2)
@@ -67,7 +67,7 @@ cols <- c("Total Federal Reserve Account", "NASA programs", "Interest on Treasur
           "Food and Nutrition Service ( misc )", "Medicaid", "Medicare",
           "Emergency Prep Response ( DHS )", "Federal Transit Admin")
 
-svg("t2_withdrawels_raw.svg", width = 10)
+svg("t2_withdrawels_raw.svg", height = 7, width = 12)
 
 p <- ggplot(d[d$item %in% cols, ], aes(x = date, y = fytd))
 p <- p + geom_point() + geom_line(colour = I("midnightblue"))
@@ -80,7 +80,7 @@ p + geom_rect(data = data.frame(xmin = as.Date("2013-10-01"), xmax = as.Date("20
 dev.off()
 
 # do it monthly
-svg("t2_withdrawels_mtd.svg", width = 10)
+svg("t2_withdrawels_mtd.svg", height = 7, width = 12)
 
 p <- ggplot(d[d$item %in% cols, ], aes(x = date, y = mtd))
 p <- p + geom_point() + geom_line(colour = I("midnightblue"))
@@ -111,7 +111,7 @@ for (i in unique(d$item)) {
   d$fytd_rebased[ind] <- fiscal_rebase(d$date[ind], d$fytd[ind])
 }
 
-svg("t2_withdrawels_rebased.svg", width = 10)
+svg("t2_withdrawels_rebased.svg", height = 7, width = 12)
 
 p <- ggplot(d[d$item %in% cols, ], aes(x = date, y = fytd_rebased))
 p <- p + geom_point() + geom_line(colour = I("midnightblue"))
@@ -139,7 +139,7 @@ d$date <- as.Date(d$date)
 
 cols <- c("Total Public Debt Subject to Limit", "Statutory Debt Limit")
 
-svg("debt_ceiling.svg", width = 10)
+svg("debt_ceiling.svg", height = 7, width = 12)
 
 p <- ggplot(data = d[d$item == "Total Public Debt Subject to Limit", ],
             aes(x = date, y = open_mo))
@@ -150,7 +150,7 @@ p <- p + geom_segment(aes(x = as.Date(round_any(as.POSIXct(date), 60*60*24*7*3, 
 p <- p + geom_line(data = d[d$item == "Statutory Debt Limit", ],
                    aes(x = date, y = open_mo, colour = item),
                    size = 2, colour = "black")
-p + ylim(c(0, 2e+07)) + ggtitle("Total Public Debt Subject to Limit") + ylab("Opening Balance of Debt")
+p + ylim(c(0, 1.75e+07)) + ggtitle("Total Public Debt Subject to Limit") + ylab("Opening Balance of Debt")
 
 dev.off()
 
@@ -167,7 +167,7 @@ temp <- join(data.frame(match = d$match), data.frame(match = cpi$match, value = 
 
 d$cpi <- temp$value
 
-svg("debt_ceiling_inflation_adjusted.svg", width = 10)
+svg("debt_ceiling_inflation_adjusted.svg", height = 9, width = 12)
 
 qplot(data = d[d$item %in% c("Statutory Debt Limit", "Total Public Debt Subject to Limit"),],
       x = date, y = open_mo / cpi, geom = "line", colour = item, size = I(3),
@@ -177,28 +177,128 @@ qplot(data = d[d$item %in% c("Statutory Debt Limit", "Total Public Debt Subject 
 
 dev.off()
 
+svg("debt_ceiling_inflatin_adjusted_diff.svg", height = 9, width = 12)
 
-qplot(data = d[d$item == "Total Public Debt Subject to Limit",],#!(d$match == "2013-10" | d$match == "2013-09"),],
-      x = date, y = open_mo / cpi, geom = "line") +
-  geom_line(data = d[d$item == "Statutory Debt Limit", ],
-            aes(x = date, y = open_mo / cpi, colour = item),
-            size = 2, colour = "black")
+qplot(data = d[d$item %in% c("Statutory Debt Limit", "Total Public Debt Subject to Limit"),],
+      x = date, y = open_mo, geom = "line", colour = desc(item), size = I(3),
+      ylab = "Total Public Debt Subject to Limit: Inflation Adjusted") +
+  theme(axis.title=element_text(face="bold.italic", size="12", color="brown"),
+        legend.position="top")
 
+dev.off()
 
+## --
+svg("debt_ceiling_inflation_adjusted.svg", height = 9, width = 12)
 
-p <- ggplot(data = d[d$item == "Total Public Debt Subject to Limit: Inflation Adjusted", ],
+p <- ggplot(data = d[d$item == "Total Public Debt Subject to Limit", ],
             aes(x = date, y = open_mo / cpi))
-p <- p + geom_line(colour = I("white")) + geom_point()
+p <- p + geom_area(fill = I('green'), alpha = I(.5), size = 2) + geom_line(colour = I("white"))
+p <- p + geom_segment(aes(x = as.Date(round_any(as.POSIXct(date), 60*60*24*7*3, floor)),
+                          xend = as.Date(round_any(as.POSIXct(date), 60*60*24*7*3, floor)),
+                          y = 0, yend = open_mo / cpi), size = .2, colour = "white")
 p <- p + geom_line(data = d[d$item == "Statutory Debt Limit", ],
                    aes(x = date, y = open_mo / cpi, colour = item),
                    size = 2, colour = "black")
-p
+p + ylim(0, 75000) + ggtitle("Total Public Debt Subject to Limit") + ylab("Opening Balance of Debt")
+
+dev.off()
 
 
-p <- p + geom_segment(aes(x = as.Date(round_any(as.POSIXct(date), 60*60*24*7*3, floor)),
-                          xend = as.Date(round_any(as.POSIXct(date), 60*60*24*7*3, floor)),
-                          y = 0, yend = open_mo), size = .2, colour = "white")
-p <- p + geom_line(data = d[d$item == "Statutory Debt Limit", ],
-                   aes(x = date, y = open_mo, colour = item),
-                   size = 2, colour = "black")
-p + ylim(c(0, 2e+07)) + ggtitle("Total Public Debt Subject to Limit") + ylab("Opening Balance of Debt")
+##
+#table 3A
+
+sql <- 'select * from "t3a" where date > "2000-10-01"'
+d <- sqldf(sql)
+d$date <- as.Date(d$date)
+d$month <- substring(d$date, 1, 7)
+
+ind <- (d$item == "Total Redemptions") | (d$item == "Total Issues")
+qplot(data = d[ind, ], x = month, y = mtd, fill = item, geom = "bar", stat = "identity")
+
+# try a stream graph
+ind <- (d$item == "Total Redemptions") | (d$item == "Total Issues")
+
+## -- match the dates of redemptions (a bit less) and issues
+
+#d$today[d$item == "Net Change in Public Debt Outstanding"]
+
+ind_issues <- match(d$date[d$item == "Total Redemptions"], d$date[d$item == "Total Issues"])
+
+df <- data.frame(date = d$date[d$item == "Total Redemptions"],
+                 redemption = - d$today[d$item == "Total Redemptions"],
+                 issues = d$today[d$item == "Total Issues"][ind_issues])
+df$net <- df$issues + df$redemption
+
+# stack
+df.stack <- df[,-1]
+df.stack <- df.stack[,rev(sort(colnames(df.stack)))]
+df.stack <- apply(df.stack, 1, cumsum)
+df.stack <- apply(df.stack, 1, function(x) sapply(x, cumsum))
+df.stack <- t(apply(df.stack, 1, function(x) x - mean(x)))
+
+# smooth the curves
+df.density <- apply(df.stack, 2, function(x) spline(x = df[,1], y = x)) # smooth each item
+df.id <- sort(rep(colnames(df.stack), each = length(df.density[[1]][[1]])))
+df.density <- do.call("rbind", lapply(df.density, as.data.frame))
+df.density <- data.frame(df.density, id = df.id)
+
+df.smooth <- data.frame(x = unlist(tapply(df.density$x, df.density$id, function(x) c(x, rev(x)))),
+                        y = c(apply(unstack(df.density[,2:3]), 1, min), unlist(tapply(df.density$y, df.density$id, function(x) c(rev(x), x)))[1:(table(df.density$id)[1]+2*max(cumsum(table(df.density$id))[-dim(df.stack)[2]]))]), id = rep(names(table(df.density$id)), each = unique(2*table(df.density$id))))
+
+qplot(x = x, y = y, data = df.smooth, geom = "polygon", fill = id)
+
+## -- see geom_polygon docs
+# http://docs.ggplot2.org/current/geom_polygon.html
+sql <- 'select * from "t3a" where date > "2003-10-01"'
+d <- sqldf(sql)
+d$date <- as.Date(d$date)
+
+ind <- (d$item == "Total Redemptions") | (d$item == "Total Issues")
+ind_issues <- match(d$date[d$item == "Total Redemptions"], d$date[d$item == "Total Issues"])
+
+df <- data.frame(date = d$date[d$item == "Total Redemptions"],
+                 redemption = - d$today[d$item == "Total Redemptions"],
+                 issues = d$today[d$item == "Total Issues"][ind_issues])
+df$net <- df$issues + df$redemption
+
+# before I smooth, let's see if the dual polygons are working
+positions <- data.frame(date = rep(c(df$date, rev(df$date)), times = 2),
+                        values = c(df$redemption, rev(df$net), df$net, rev(df$issues)),
+                        ids = factor(c(rep("redemption", length = 2*dim(df)[1]), rep("issues", length = 2*dim(df)[1]))))
+#levels(positions$ids) <- c("redemption", "issues")
+
+# plot!
+svg("ledger_unsmoothed.svg", height = 9, width = 12)
+
+ggplot(data = positions, aes(x = date, y = values)) +
+  geom_polygon(aes(fill = ids, order = desc(ids))) +
+  scale_fill_brewer(palette = "Set1") +
+  geom_line(data = df, aes(x = date, y = net), colour = I("white"), inherit.aes = FALSE)
+
+dev.off()
+
+## now let's try with smooth
+# lowess vs spline
+# http://stats.stackexchange.com/questions/20032/comparing-smoothing-splines-vs-loess-for-smoothing
+
+df.smooth <- apply(df[,-1], 2, function(x) lowess(x, f = .001))
+
+smoothie <- data.frame(date = rep(c(df$date, rev(df$date)), times = 2),
+                       values = c(df.smooth$redemption$y + df.smooth$net$y,
+                           rev(df.smooth$net$y),
+                           df.smooth$net$y,
+                           rev(df.smooth$issues$y) + rev(df.smooth$net$y)),
+                       ids = factor(c(rep("redemption", length = 2*dim(df)[1]), rep("issues", length = 2*dim(df)[1]))))
+
+svg("ledger_smoothed.svg", height = 7, width = 12)
+
+ggplot(data = smoothie, aes(x = date, y = values)) +
+  geom_polygon(aes(fill = ids)) +
+  scale_fill_brewer(palette = "Set1") +
+  geom_line(data = df, aes(x = date, y = lowess(net, f = .001)$y), size = 2, colour = I("white"), inherit.aes = FALSE) +
+  geom_line(data = df, aes(x = date, y = lowess(redemption, f = .001)$y + lowess(net, f = .001)$y), size = 1, colour = I("skyblue2"), inherit.aes = FALSE) +
+  geom_line(data = df, aes(x = date, y = lowess(issues, f = .001)$y + lowess(net, f = .001)$y), size = 1, colour = I("indianred2"), inherit.aes = FALSE) +
+  ylab("Daily Net Increase in Public Debt")
+
+dev.off()
+

@@ -1,0 +1,30 @@
+## NINO 3.4 SST Anomaly
+## http://chartsgraphs.wordpress.com/2010/01/28/rclimate-script-nino-3-4-sst-anomaly-trends/
+## http://learnr.wordpress.com/2009/05/18/ggplot2-three-variable-time-series-panel-chart/
+nino <- read.table("/./NINO 3.4 SST Anomaly.txt", head = T)
+nino$Week <- strptime(nino$Week, format = "%d%b%Y")
+nino.name <- rep(c("Nino1+2", "Nino3", "Nino34", "Nino4"), each = 2*dim(nino)[1])
+nino <- data.frame(Week = nino$Week, stack(nino[,-1]), nino.name)
+nino$ind <- gsub(".[0-9]", "", nino$ind)
+
+head(nino, 2)
+##         Week values ind nino.name
+## 1 1990-01-03   23.4 SST   Nino1+2
+## 2 1990-01-10   23.4 SST   Nino1+2
+
+qplot(x=Week, y=values, data = subset(nino, ind == "SSTA" & nino.name == "Nino34"), geom = "point", col = values, fill = values, shape = I(15), solid = TRUE) + scale_colour_gradient2(low="blue", mid="white", high="red")
+
+# -- fill area
+nino34 <- subset(nino, ind == "SSTA" & nino.name == "Nino34")
+
+cut <- 100
+nino34.grid <- with(nino34, outer(values, seq(min(values), max(values), length=cut), function(X,Y) { (X >= 0 & X > Y & Y > 0) | (X <= 0 & X < Y & Y < 0) }))
+
+nino34.grid <- t(apply(nino34.grid, 1, function(x) { x[x == F] <- NA; x*seq(min(nino34$values), max(nino34$values), length=cut) }))
+
+colnames(nino34.grid) <- round(seq(min(nino34$values), max(nino34$values), length=cut), 2)
+rownames(nino34.grid) <- as.character(nino34$Week)
+
+nino34.grid <- melt(nino34.grid)
+
+qplot(as.POSIXct(X1), X2, fill = value, data = nino34.grid, geom = "tile") + scale_fill_gradient2(low="blue", mid="white", high="red")

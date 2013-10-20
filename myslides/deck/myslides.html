@@ -22,7 +22,9 @@
 	<link rel="stylesheet" href="themes/style/web-2.0.css">
 	
 	<!-- Transition theme. More available in /themes/transition/ or create your own. -->
-	<link rel="stylesheet" href="themes/transition/horizontal-slide.css">
+	<link rel="stylesheet" href="themes/transition/vertical-slide.css">
+
+	<link rel="stylesheet" href="themes/style/my-css.css">
 	
 	<!-- Required Modernizr file -->
 	<script src="modernizr.custom.js"></script>
@@ -31,47 +33,74 @@
 
 <!-- Begin slides. Just make elements with a class of slide. -->
 
-<section class="slide">
-	<h1>Government Shutdown Visuals</h1>
-	<h2>Motoki Wu</h2>
+<!-- <article class="on-slide-intro on-slide-0"> -->
+<section class="slide deck-current">
+<h1> government shutdown visuals </h1>
+<h2>---- Motoki Wu</h2>
+</section>
+<section class="slide deck-after">
+<h2> government visuals </h2>
+
+	<div class="sample-content">
+		<p class="slide deck-after" id="slides-html">Slides are basic HTML.</p>
+		<p class="slide deck-after" id="slide-states">The <a href="http://imakewebthings.com/deck.js/docs/#deck-core">deck.core</a> module keeps track of slide states <span class="slide deck-after" id="deck-states">and deck states</span><span class="slide deck-after" id="css-role">, leaving CSS to define what each state look like…</span></p>
+		<p class="slide deck-after" id="css-transition">…and how to transition between&nbsp;them.</p>
+	</div>
 </section>
 
-<section class="slide">
-<small><pre><code>http://www.nytimes.com/interactive/2013/09/30/us/politics/the-back-and-forth-over-the-shutdown.html?smid=tw-share&_r=0</code></pre></small>
-<img src="myimages/backforthshutdowndebtceiling.png" />
-
-</section>
-
-<section class="slide">
-<small><pre><code>http://vizual-statistix.tumblr.com/post/62731422207/given-that-were-on-the-verge-of-a-possible</code></pre></small>
-<img src="myimages/tumblr_mtya62fFpC1s3dn7vo1_1280.png" />
-</section>
-
-<section class="slide">
-<p>dfdf</p>
-<embed src="myimages/operating_cash_balance.svg" type="image/svg+xml" />
-
-</section>
-
-</section>
-<section class="slide">
-<p>dfdf</p>
-<embed src="myimages/t2_withdrawels_rebased.svg" type="image/svg+xml" />
-
-</section>
+<!-- </article> -->
 
 <section class="slide">
-<p>blabla this is some text</p>
-<embed src="myimages/debt_ceiling.svg" type="image/svg+xml" />
+	<br>
+	<pre><code>
+cut <- 100
+nino34.grid <-
+  with(nino34,
+     outer(values, seq(min(values), max(values), length=cut), function(X,Y) {
+         (X >= 0 & X > Y & Y > 0) | (X <= 0 & X < Y & Y < 0)
+       }))
+
+nino34.grid <- t(apply(nino34.grid, 1, function(x) {
+  x[x == F] <- NA;
+  x*seq(min(nino34$values), max(nino34$values), length=cut)
+}))
+	</code></pre>
+</section>
+
+<section class="slide">
+<h3>dfdf</h3>
+<embed width="100%" src="myimages/operating_cash_balance.svg" type="image/svg+xml" />
 
 </section>
 
 <section class="slide">
-<p>blabla this is some text</p>
-<embed src="myimages/debt_ceiling_inflation_adjusted.svg" type="image/svg+xml" />
+<h3>dfdf</h3>
+<embed width="100%" src="myimages/t2_withdrawels_rebased.svg" type="image/svg+xml" />
 
 </section>
 
+<section class="slide">
+	<h3>more text</h3>
+	<embed width="100%" src="myimages/debt_ceiling.svg" type="image/svg+xml" />
+</section>
+
+<section class="slide">
+<h3>dfdf</h3>
+<embed width="100%" src="myimages/ledger_smoothed.svg" type="image/svg+xml" />
+
+</section>
+
+<section class="slide deck-after">
+<pre><code>
+ggplot(data = smoothie, aes(x = date, y = values)) +
+	  geom_polygon(aes(fill = ids)) +
+	  scale_fill_brewer(palette = "Set1") +
+	  geom_line(data = df, aes(x = date, y = lowess(net, f = .001)$y), size = 2, colour = I("white"), inherit.aes = FALSE) +
+	  geom_line(data = df, aes(x = date, y = lowess(redemption, f = .001)$y + lowess(net, f = .001)$y), size = 1, colour = I("skyblue2"), inherit.aes = FALSE) +
+	  geom_line(data = df, aes(x = date, y = lowess(issues, f = .001)$y + lowess(net, f = .001)$y), size = 1, colour = I("indianred2"), inherit.aes = FALSE) +
+	  ylab("Daily Net Increase in Public Debt")
+</code></pre>
+</section>
 
 <!-- End slides. -->
 
