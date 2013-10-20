@@ -40,6 +40,6 @@ split_merge_diff <- function(top_item_wd, date1, date2, date3, date4){
    
    unzero_merge_sort <- unzero_merged[order(unzero_merged$diff),]
    unzero_merge_sort$abs <- sapply(unzero_merge_sort$diff, function(x) {if (x <= 0) 1 else 0})
-   unzero_merge_sort$diff <- sapply(unzero_merge_sort$diff, function(x) {if (x <= 0) abs(x) + 1 else x})
+   unzero_merge_sort$diff <- sapply(unzero_merge_sort$diff, function(x) {if (x <= 0) abs(x) + 1 else x+1})
    return(list(unzero_merge_sort,old_mask, recent_mask))
  }

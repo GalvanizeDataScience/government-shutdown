@@ -42,7 +42,10 @@ unzero_merge_sort3 <- split_merge_diff(top_item_wd = top_item_wd, date1 = as.Dat
                                        date4 = as.Date('2010-09-15'))[[1]]
 
 get_rid <- c("Public Debt Cash Redemp ( Table III B )","Total Federal Reserve Account" ,
-             "Total Withdrawals ( excluding transfers )" )
+             "Total Withdrawals ( excluding transfers )" ,"Interior", 'Total Other Withdrawals',
+             'Net Change in Operating Cash Balance','Public Debt Cash Redemp ( Table III B )',
+             'Total Withdrawals ( excluding transfers )','Total Federal Reserve Account',
+             'Transfers to Federal Reserve Account Table V','Transfers to Depositaries')
 
 unzero_merge_sort1[(!(unzero_merge_sort1$item %in% get_rid)&(unzero_merge_sort1$abs == 1))]
 
@@ -61,10 +64,17 @@ p3 <- ggplot(unzero_merge_sort1[(!(unzero_merge_sort1$item %in% get_rid)&(unzero
 print(p3)
 
 p4 <- ggplot(unzero_merge_sort2[(!(unzero_merge_sort2$item %in% get_rid)&(unzero_merge_sort2$abs == 1)),]) +
-  aes(x=factor(item, levels = unique(item)), y =diff) + # group = abs, fill = factor(abs)) +
+  aes(x=factor(item, levels = unique(item)), y =diff, fill = recent_freq) + # group = abs, fill = factor(abs)) +
   geom_bar(stat = 'identity', position = 'dodge') + 
-  scale_y_log10(breaks = c(10,100,1000,10000),labels = dollar) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  ggtitle('What Did the Government Deem \'Unnecessary\'?') + 
+  scale_y_log10(breaks = c(10,100,1000,10000),labels = dollar, name = 
+                  'Difference in Average Withdrawal\n(between this and last year)') +
+  scale_x_discrete(name = 'Program') +
+  scale_fill_gradient('Total Number of\nWithdrawals This Year') + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.direction = 'horizontal',
+        legend.position = c(.8,.8),
+        legend.background)
 print(p4)
 
 
