@@ -48,7 +48,7 @@ sql <- 'select * from "t1" where date > "2012-10-01" and account = "Federal Rese
 d <- sqldf(sql)
 d$date <- as.Date(d$date)
 
-svg("operating_cash_balance.svg", height = 9, width = 12)
+svg("operating_cash_balance.svg", height = 7, width = 12)
 
 p <- ggplot(d, aes(x = date, y = close_today))
 p <- p + geom_area(fill = "skyblue1", alpha = .5) + geom_line(colour = "black", size = 2)
@@ -65,9 +65,9 @@ d$date <- as.Date(d$date)
 cols <- c("Total Federal Reserve Account", "NASA programs", "Interest on Treasury Securities",
           "Education Department programs", "Defense Vendor Payments", "Federal Salaries",
           "Food and Nutrition Service ( misc )", "Medicaid", "Medicare",
-          "Emergency Prep Response ( DHS )", "Federal Transit Admin")
+          "Emergency Prep Response ( DHS )", "Federal Salaries ( EFT )")
 
-svg("t2_withdrawels_raw.svg", height = 9, width = 12)
+svg("t2_withdrawels_raw.svg", height = 7, width = 12)
 
 p <- ggplot(d[d$item %in% cols, ], aes(x = date, y = fytd))
 p <- p + geom_point() + geom_line(colour = I("midnightblue"))
@@ -80,7 +80,7 @@ p + geom_rect(data = data.frame(xmin = as.Date("2013-10-01"), xmax = as.Date("20
 dev.off()
 
 # do it monthly
-svg("t2_withdrawels_mtd.svg", height = 9, width = 12)
+svg("t2_withdrawels_mtd.svg", height = 7, width = 12)
 
 p <- ggplot(d[d$item %in% cols, ], aes(x = date, y = mtd))
 p <- p + geom_point() + geom_line(colour = I("midnightblue"))
@@ -111,7 +111,7 @@ for (i in unique(d$item)) {
   d$fytd_rebased[ind] <- fiscal_rebase(d$date[ind], d$fytd[ind])
 }
 
-svg("t2_withdrawels_rebased.svg", height = 9, width = 12)
+svg("t2_withdrawels_rebased.svg", height = 7, width = 12)
 
 p <- ggplot(d[d$item %in% cols, ], aes(x = date, y = fytd_rebased))
 p <- p + geom_point() + geom_line(colour = I("midnightblue"))
@@ -122,6 +122,18 @@ p + geom_rect(data = data.frame(xmin = as.Date("2013-10-01"), xmax = as.Date("20
               alpha = .2)
 
 dev.off()
+
+## - now check all between april and july
+
+sql <- 'select * from "t2" where (date between "2013-04-01" and "2013-07-31") and transaction_type = "withdrawal"'
+d <- sqldf(sql)
+d$date <- as.Date(d$date)
+
+ind <- d$item %in% names(which(table(d$item) > 50))[-c(21, 23, 26:28)]
+
+qplot(data = d[ind, ], x = day, y = mtd, fill = item, geom = "area", facets = ~ month) + theme(legend.position = "right")
+
+qplot(data = d[d$date %in% as.Date(c("2013-07-27", "2013-07-28", "2013-07-29", "2013-07-30", "2013-07-31")), ], x = day, y = mtd, geom = "line", facets = ~ month) + theme(legend.position = "right")
 
 ## -- US government fiscal year
 ## 1st quarter: 1 October 2013 – 31 December 2013
@@ -139,7 +151,7 @@ d$date <- as.Date(d$date)
 
 cols <- c("Total Public Debt Subject to Limit", "Statutory Debt Limit")
 
-svg("debt_ceiling.svg", height = 9, width = 12)
+svg("debt_ceiling.svg", height = 7, width = 12)
 
 p <- ggplot(data = d[d$item == "Total Public Debt Subject to Limit", ],
             aes(x = date, y = open_mo))
@@ -290,7 +302,7 @@ smoothie <- data.frame(date = rep(c(df$date, rev(df$date)), times = 2),
                            rev(df.smooth$issues$y) + rev(df.smooth$net$y)),
                        ids = factor(c(rep("redemption", length = 2*dim(df)[1]), rep("issues", length = 2*dim(df)[1]))))
 
-svg("ledger_smoothed.svg", height = 9, width = 12)
+svg("ledger_smoothed.svg", height = 7, width = 12)
 
 ggplot(data = smoothie, aes(x = date, y = values)) +
   geom_polygon(aes(fill = ids)) +

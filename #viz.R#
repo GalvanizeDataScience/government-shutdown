@@ -6,6 +6,7 @@ library(grid)
 library(gridExtra)
 library(sqldf)
 library(knitr)
+library(reshape2)
 
 #source("./boilerplate.r")
 source("./shutdown.r")
@@ -65,7 +66,7 @@ d$date <- as.Date(d$date)
 cols <- c("Total Federal Reserve Account", "NASA programs", "Interest on Treasury Securities",
           "Education Department programs", "Defense Vendor Payments", "Federal Salaries",
           "Food and Nutrition Service ( misc )", "Medicaid", "Medicare",
-          "Emergency Prep Response ( DHS )", "Federal Transit Admin")
+          "Emergency Prep Response ( DHS )", "Federal Salaries ( EFT )")
 
 svg("t2_withdrawels_raw.svg", height = 7, width = 12)
 
@@ -122,6 +123,27 @@ p + geom_rect(data = data.frame(xmin = as.Date("2013-10-01"), xmax = as.Date("20
               alpha = .2)
 
 dev.off()
+
+## now let's do this for all categories
+sql <- 'select * from "t2" where (date > "2000-04-01") and transaction_type = "withdrawal"'
+d <- sqldf(sql)
+d$date <- as.Date(d$date)
+
+df <- reshape(d, varying = "today", timevar = "date", idvar = "item", d)
+
+
+
+## - now check all between april and july
+
+sql <- 'select * from "t2" where (date between "2013-04-01" and "2013-07-29") and transaction_type = "withdrawal"'
+d <- sqldf(sql)
+d$date <- as.Date(d$date)
+
+ind <- d$item %in% names(which(table(d$item) > 50))[-c(21, 23, 26:28)]
+
+qplot(data = d[ind, ], x = day, y = mtd, fill = item, geom = "area", facets = ~ month) + theme(legend.position = "right")
+
+qplot(data = d[d$date %in% as.Date(c("2013-07-26", "2013-07-27", "2013-07-28", "2013-07-29", "2013-07-30", "2013-07-31")), ], x = day, y = mtd, geom = "area", fill = item)
 
 ## -- US government fiscal year
 ## 1st quarter: 1 October 2013 – 31 December 2013
