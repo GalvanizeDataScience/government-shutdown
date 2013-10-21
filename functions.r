@@ -22,8 +22,8 @@ split_merge_diff <- function(top_item_wd, date1, date2, date3, date4){
   recent_freq <- count(top_item_wd[recent_mask,'item'])
   old_freq <- count(top_item_wd[old_mask,'item'])
   # collapse the tables by the items, taking the average of all the withdawals
-  recent_agg <- aggregate(today~item, data = top_item_wd[recent_mask,], FUN = mean)
-  old_agg <- aggregate(today~item, data = top_item_wd[old_mask,], FUN = mean)
+  recent_agg <- aggregate(today~item, data = top_item_wd[recent_mask,], FUN = sum)
+  old_agg <- aggregate(today~item, data = top_item_wd[old_mask,], FUN = sum)
   # join the collapsed tables with their frequencies
   recent_agg_freq <- merge(recent_agg, recent_freq, by.x = 'item', by.y = 'x')
   old_agg_freq <- merge(old_agg, old_freq, by.x = 'item', by.y = 'x')

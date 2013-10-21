@@ -44,39 +44,24 @@ p1 <- ggplot(final) +
   
 print(p1)
 
-unzero_merge_sort1 <- split_merge_diff(top_item_wd = top_item_wd, date1 = as.Date('2012-08-15'),
-                                       date2 = as.Date('2012-09-15'),
-                                       date3 = as.Date('2011-08-15'),
-                                       date4 = as.Date('2011-09-15'))[[1]]
-unzero_merge_sort2 <- split_merge_diff(top_item_wd = top_item_wd, date1 = as.Date('2013-08-15'),
-                                       date2 = as.Date('2013-09-15'),
-                                       date3 = as.Date('2012-08-15'),
-                                       date4 = as.Date('2012-09-15'))[[1]]
-unzero_merge_sort3 <- split_merge_diff(top_item_wd = top_item_wd, date1 = as.Date('2011-08-15'),
-                                       date2 = as.Date('2011-09-15'),
-                                       date3 = as.Date('2010-08-15'),
-                                       date4 = as.Date('2010-09-15'))[[1]]
+unzero_merge_sort1 <- split_merge_diff(top_item_wd = top_item_wd, date1 = as.Date('2012-09-15'),
+                                       date2 = as.Date('2012-10-15'),
+                                       date3 = as.Date('2011-09-15'),
+                                       date4 = as.Date('2011-10-15'))[[1]]
+unzero_merge_sort2 <- split_merge_diff(top_item_wd = top_item_wd, date1 = as.Date('2013-09-15'),
+                                       date2 = as.Date('2013-10-15'),
+                                       date3 = as.Date('2012-09-15'),
+                                       date4 = as.Date('2012-10-15'))[[1]]
+unzero_merge_sort3 <- split_merge_diff(top_item_wd = top_item_wd, date1 = as.Date('2011-09-15'),
+                                       date2 = as.Date('2011-10-15'),
+                                       date3 = as.Date('2010-09-15'),
+                                       date4 = as.Date('2010-10-15'))[[1]]
 
 
 p2 <- ggplot(unzero_merge_sort2[(!(unzero_merge_sort2$item %in% get_rid)&(unzero_merge_sort2$abs == 1)),]) +
   aes(x=factor(item, levels = unique(item)), y =diff, fill = recent_freq) + # group = abs, fill = factor(abs)) +
   geom_bar(stat = 'identity', position = 'dodge') + 
-  ggtitle('What Did the Government Deem \'Unnecessary\'?') + 
-  scale_y_log10(breaks = c(10,100,1000,10000),labels = dollar, name = 
-                  'Difference in Average Withdrawal\n(between this and last year)') +
-  scale_x_discrete(name = 'Program') +
-  scale_fill_gradient('Total Number of\nWithdrawals This Year') + 
-  theme(axis.text.x = element_text(angle = 45, hjust = 1),
-        legend.direction = 'horizontal',
-        legend.position = c(.8,.8),
-        legend.background = element_rect(fill = 'white'),
-        panel.background = element_rect(fill = '990000'))
-print(p2)
-
-p3 <- ggplot(unzero_merge_sort1[(!(unzero_merge_sort1$item %in% get_rid)&(unzero_merge_sort1$abs == 1)),]) +
-  aes(x=factor(item, levels = unique(item)), y =diff, fill = recent_freq) + # group = abs, fill = factor(abs)) +
-  geom_bar(stat = 'identity', position = 'dodge') + 
-  ggtitle('Change in Average Withdrawal Amounts Between 2012 and 2011') + 
+  ggtitle('Change in Average Withdrawal Amounts Between 2013 and 2012') + 
   scale_y_log10(breaks = c(10,100,1000,10000),labels = dollar, name = 
                   'Difference in Average Withdrawal') +
   scale_x_discrete(name = 'Program') +
@@ -86,11 +71,41 @@ p3 <- ggplot(unzero_merge_sort1[(!(unzero_merge_sort1$item %in% get_rid)&(unzero
         legend.position = c(.8,.8),
         legend.background = element_rect(fill = 'white'),
         panel.background = element_rect(fill = '990000'))
-print(p3)
+  print(p2)
+  
+  p3 <- ggplot(unzero_merge_sort1[(!(unzero_merge_sort1$item %in% get_rid)&(unzero_merge_sort1$abs == 1)),]) +
+    aes(x=factor(item, levels = unique(item)), y =diff, fill = recent_freq) + # group = abs, fill = factor(abs)) +
+    geom_bar(stat = 'identity', position = 'dodge') + 
+    ggtitle('Change in Average Withdrawal Amounts Between 2012 and 2011') + 
+    scale_y_log10(breaks = c(10,100,1000,10000),labels = dollar, name = 
+                    'Difference in Average Withdrawal') +
+    scale_x_discrete(name = 'Program') +
+    scale_fill_gradient('Total Number of\nWithdrawals This Year') + 
+    theme(axis.text.x = element_text(angle = 45, hjust = 1),
+          legend.direction = 'horizontal',
+          legend.position = c(.8,.8),
+          legend.background = element_rect(fill = 'white'),
+          panel.background = element_rect(fill = '990000'))
+  print(p3)
+  
+  p4 <- ggplot(unzero_merge_sort3[(!(unzero_merge_sort3$item %in% get_rid)&(unzero_merge_sort3$abs == 1)),]) +
+    aes(x=factor(item, levels = unique(item)), y =diff, fill = recent_freq) + # group = abs, fill = factor(abs)) +
+    geom_bar(stat = 'identity', position = 'dodge') + 
+    ggtitle('Change in Average Withdrawal Amounts Between 2012 and 2011') + 
+    scale_y_log10(breaks = c(10,100,1000,10000),labels = dollar, name = 
+                    'Difference in Average Withdrawal') +
+    scale_x_discrete(name = 'Program') +
+    scale_fill_gradient('Total Number of\nWithdrawals This Year') + 
+    theme(axis.text.x = element_text(angle = 45, hjust = 1),
+          legend.direction = 'horizontal',
+          legend.position = c(.8,.8),
+          legend.background = element_rect(fill = 'white'),
+          panel.background = element_rect(fill = '990000'))
+  print(p4)
 
-ggsave(plot = p1, device = 'jpeg')
+ggsave(filename = 'p1.jpeg', plot = p1)
 dev.off()
-ggsave(plot = p2, device  = 'jpeg')
+ggsave(filename = 'p2.jpeg', plot = p2)
 dev.off()
-ggsave(pl0t = p3, devide = 'jpeg')
+ggsave(filename = 'p3.jpeg', plot = p3)
 dev.off()
