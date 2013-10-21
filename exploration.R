@@ -8,7 +8,7 @@ library(reshape2)
 
 t1$date <- as.Date(t1$date)
 t1_subset <- subset(t1, account == 'Federal Reserve Account')
-t1_subset <- subset(t1_subset, date )
+t1_subset <- subset(t1_subset, date > as.Date('2008-01-1'))
 # t1_subset[,'color'] <- NA
 t1_subset$recent <- sapply(t1_subset$date, function(x){if (x > as.Date('2013-08-01')) 1 else 0})
 
@@ -33,6 +33,7 @@ get_rid <- c("Public Debt Cash Redemp ( Table III B )","Total Federal Reserve Ac
              'Total Withdrawals ( excluding transfers )','Total Federal Reserve Account',
              'Transfers to Federal Reserve Account Table V','Transfers to Depositaries')
 final <- subset_most_exp[!(subset_most_exp$item %in% get_rid),]
+
 
 p1 <- ggplot(final) + 
   aes(x = date, y= today, color = final$item)+
