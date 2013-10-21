@@ -19,14 +19,30 @@ str(t1_subset)
 
 t2$date <- as.Date(t2$date)
 withdrawals <-t2[(t2$transaction_type == 'withdrawal') & (t2$is_net == 0) & (t2$date > as.Date('2008-01-01')),]
-#withdrawals$recent <- sapply(withdrawals$date, function(x){if (x > as.Date('2013-08-15')) 1 else 0})
 top = names(sort(table(withdrawals$item), decreasing = TRUE)[1:100])
 withdrawals$greatest = factor(withdrawals$item, levels = top)
 top_item_wd <- withdrawals[withdrawals[,'item']%in%top,]
-#with_great_freq <- withdrawals[withdrawals$item%in%withdrawals$greatest]
-p1 <- ggplot(top_item_wd)
-p1 <- p1 + aes(x = date, y = today, group = greatest, color = greatest) + geom_point(na.rm = TRUE)
-p1 + scale_y_log10(labels = dollar)
+
+sorted_top_items <- top_item_wd[order(top_item_wd$today, decreasing = TRUE),]
+most_expensive <- unique(sorted_top_items$item)[1:20]
+subset_most_exp <- sorted_top_items[(sorted_top_items$item %in% most_expensive) &
+                                      (sorted_top_items$today > 0),]
+get_rid <- c("Public Debt Cash Redemp ( Table III B )","Total Federal Reserve Account" ,
+             "Total Withdrawals ( excluding transfers )" ,"Interior", 'Total Other Withdrawals',
+             'Net Change in Operating Cash Balance','Public Debt Cash Redemp ( Table III B )',
+             'Total Withdrawals ( excluding transfers )','Total Federal Reserve Account',
+             'Transfers to Federal Reserve Account Table V','Transfers to Depositaries')
+final <- subset_most_exp[!(subset_most_exp$item %in% get_rid),]
+
+p1 <- ggplot(final) + 
+  aes(x = date, y= today, color = final$item)+
+  geom_point() + 
+  scale_y_log10(labels = dollar, name = 'Withdrawal Amount') +
+  ggtitle('Which Government Programs Make the Most in Withdrawals?') +
+  scale_x_date(name = "Date")+
+  scale_color_hue(name = 'Government Program', h=c(0,400)) 
+  
+print(p1)
 
 unzero_merge_sort1 <- split_merge_diff(top_item_wd = top_item_wd, date1 = as.Date('2012-08-15'),
                                        date2 = as.Date('2012-09-15'),
@@ -41,29 +57,8 @@ unzero_merge_sort3 <- split_merge_diff(top_item_wd = top_item_wd, date1 = as.Dat
                                        date3 = as.Date('2010-08-15'),
                                        date4 = as.Date('2010-09-15'))[[1]]
 
-get_rid <- c("Public Debt Cash Redemp ( Table III B )","Total Federal Reserve Account" ,
-             "Total Withdrawals ( excluding transfers )" ,"Interior", 'Total Other Withdrawals',
-             'Net Change in Operating Cash Balance','Public Debt Cash Redemp ( Table III B )',
-             'Total Withdrawals ( excluding transfers )','Total Federal Reserve Account',
-             'Transfers to Federal Reserve Account Table V','Transfers to Depositaries')
 
-unzero_merge_sort1[(!(unzero_merge_sort1$item %in% get_rid)&(unzero_merge_sort1$abs == 1))]
-
-p5 <- ggplot(unzero_merge_sort3[!(unzero_merge_sort3$item %in% get_rid),]) +
-  aes(x=factor(item, levels = unique(item)), y =diff, group = abs, fill = factor(abs)) +
-  geom_bar(stat = 'identity', position = 'dodge') + 
-  scale_y_log10(breaks = c(10,100,1000,10000),labels = dollar) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-print(p5)
-
-p3 <- ggplot(unzero_merge_sort1[(!(unzero_merge_sort1$item %in% get_rid)&(unzero_merge_sort1$abs == 1)),]) +
-  aes(x=factor(item, levels = unique(item)), y =diff) + #group = abs, fill = factor(abs)) +
-  geom_bar(stat = 'identity', position = 'dodge') + 
-  scale_y_log10(breaks = c(10,100,1000,10000),labels = dollar) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-print(p3)
-
-p4 <- ggplot(unzero_merge_sort2[(!(unzero_merge_sort2$item %in% get_rid)&(unzero_merge_sort2$abs == 1)),]) +
+p2 <- ggplot(unzero_merge_sort2[(!(unzero_merge_sort2$item %in% get_rid)&(unzero_merge_sort2$abs == 1)),]) +
   aes(x=factor(item, levels = unique(item)), y =diff, fill = recent_freq) + # group = abs, fill = factor(abs)) +
   geom_bar(stat = 'identity', position = 'dodge') + 
   ggtitle('What Did the Government Deem \'Unnecessary\'?') + 
@@ -74,19 +69,28 @@ p4 <- ggplot(unzero_merge_sort2[(!(unzero_merge_sort2$item %in% get_rid)&(unzero
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         legend.direction = 'horizontal',
         legend.position = c(.8,.8),
-        legend.background)
-print(p4)
+        legend.background = element_rect(fill = 'white'),
+        panel.background = element_rect(fill = '990000'))
+print(p2)
 
+p3 <- ggplot(unzero_merge_sort1[(!(unzero_merge_sort1$item %in% get_rid)&(unzero_merge_sort1$abs == 1)),]) +
+  aes(x=factor(item, levels = unique(item)), y =diff, fill = recent_freq) + # group = abs, fill = factor(abs)) +
+  geom_bar(stat = 'identity', position = 'dodge') + 
+  ggtitle('Change in Average Withdrawal Amounts Between 2012 and 2011') + 
+  scale_y_log10(breaks = c(10,100,1000,10000),labels = dollar, name = 
+                  'Difference in Average Withdrawal') +
+  scale_x_discrete(name = 'Program') +
+  scale_fill_gradient('Total Number of\nWithdrawals This Year') + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.direction = 'horizontal',
+        legend.position = c(.8,.8),
+        legend.background = element_rect(fill = 'white'),
+        panel.background = element_rect(fill = '990000'))
+print(p3)
 
-pos_names = merged_agg[merged_agg$diff > 0,'item']
-neg_names = merged_agg[merged_agg$diff <= 0,'item']
-pos_subset = top_item_wd[top_item_wd[,'item']%in%pos_names,]
-neg_subset = top_item_wd[top_item_wd[,'item']%in%neg_names,]
-ggplot(neg_subset[neg_subset[,'date']>as.Date('2013-9-01'),]) + 
-  aes(x = date, y = today, group = item, color = item) + geom_bar() +
-  scale_y_continuous(labels = dollar)
-
-ggplot(withdrawals)
-
-#ggsave(filename='shutdown_bar.jpg', plot = p2)
-#ggsave(filename='shutdown_point.jpg', plot = p1)
+ggsave(plot = p1, device = 'jpeg')
+dev.off()
+ggsave(plot = p2, device  = 'jpeg')
+dev.off()
+ggsave(pl0t = p3, devide = 'jpeg')
+dev.off()
