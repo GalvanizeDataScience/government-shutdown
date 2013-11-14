@@ -1,6 +1,25 @@
 The Grammar of Graphics
 ======
 
+In order to produce complex graphics, it is helpful to conceive of
+some primative components of graphics that can be added together.
+The grammar of graphics provides these concepts.
+
+In this lecture, we'll talk through the main concepts in the grammar
+of graphics and show how they are used in graphics. Towards the end,
+we'll use this grammar to deconstruct some famous graphics.
+
+Most sections of these "slides" correspond to chapters in the
+book *The Grammar of Graphics*. We're presenting them out of order
+because I think this order is better. We'll talk through the
+different concepts. For the more complicated ones, we'll draw
+examples on the board.
+
+<!--
+If you don't want to draw examples on the board, you can just
+prepare a bunch of plots in advance.
+-->
+
 ## Command types
 
 > Statistical graphic specifications are expressed in six statements:
