@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Exploring Governement's finances</title>
+
+		<meta name="description" content="A closer look to treasury.io data using R and ggplot">
+		<meta name="author" content="Carlo Torniai">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/serif.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1>Exploring Governement's finances</h1>
+					<h3>Having fun with R, ggplot and treasury.io data</h3>
+					<p>
+						<small>Created by <a href="http://carlotorniai.net">Carlo Torniai</a> / <a href="http://twitter.com/carlotorniai">@carlotorniai</a></small>
+					</p>
+				</section>
+
+				<section>
+					<h2>First Steps</h2>
+					<p>
+						In order to understand the data I started with the first table T1.
+The documentation about T1 states that the table &ldquo;how much money does Uncle Sam have in his checking account on any given day&rdquo;
+					</p>
+
+				</section>
+
+				
+
+				<section>
+					<h2>Money in accounts</h2>
+					<p>
+						<p>I want to build a simple cumulative view of the the amount of money in each account at the beginnig fo the fiscal year for the time frame we had at our disposal.</p>
+						<p><a href="./images/opening_accounts_2005_2013.png">
+   						<img src="./images/opening_accounts_2005_2013.png", height=80% width=80%></a></p>
+					</p>
+				</section>
+
+				<section>
+					<h2>Money in accounts</h2>
+					<p>
+						<p>We can notice in 2008 the start fo the Supplementing Financing Programs
+and the drop in the Tax and Loan Note accounts.</p>
+						<p><a href="./images/opening_accounts_2005_2013_arrow.png">
+   						<img src="./images/opening_accounts_2005_2013_arrow.png", height=70% width=70%></a>
+<a href="http://www.pyramis.com/fileadmin/templates/pyramis_public/downloads/us/unwinding_the_SFP_WP_Nov_2010.pdf">
+	<h6>More info on SFP here</h6></a>
+					</p>
+				</section>
+
+				<section>
+					<h2>Tax and Loan Note account</h2>
+					<p>I was also interested in seeing more closeley the trend of the Tax and Loan Note Account.
+					</p>
+					<p><a href="./images/money_in_tax_loan_account.png"> 
+					<img src="./images/money_in_tax_loan_account.png"/></a></p>
+
+				</section>
+
+				<section>
+					<h2>How money was spent during the financial crisis?</h2>
+					<p> Trend between 2005 and 2008</p>
+					<p><a href="./images/compare_expenses_2005_2008.png"> 
+					<img src="./images/compare_expenses_2005_2008.png" width=70% height=70%/></a></p>
+				</section>
+
+				<section>
+					<h2>How money was spent during the financial crisis?</h2>
+					<p> 2008-2011</p>
+					<p><a href="./images/compare_expenses_2008_2011_arrow.png"> 
+					<img src="./images/compare_expenses_2008_2011_arrow.png" width=70% height=70%/></a></p>
+				</section>
+
+				<section>
+					<section>
+					<h2>Government shutdown</h2>
+
+					<p>Who didn&#39;t get paid during government shoutdown?</p>
+					<p> Trying to scatter plot the accounts with withdrawals between 2012...
+					<p> <img src="./images/item_paid_point_oct_2012.png" width=70% height=70%/></p>
+					</section>
+					
+					<section>
+                     <h2>Government shutdown</h2>
+                     <p>... and 2013 Wasn't of much help.
+                     <p> <img src="./images/item_paid_points_oct_2013.png" width=70% height=70%/></p>          
+					</section>
+
+				</section>
+
+				<section>
+					<h2>A closer look</h2>
+					<p> Comparing Sept-Oct 2012 with Sept-Oct 2013<br>there were 20 payments missing this years:
+					<ol>
+						<li>State Department</li>            
+						<li>Federal Financing Bank</li> 
+						<li>International Monetary Fund</li>
+						<li>Treasury Department programs</li>   
+						<li>HHS: Indian Health Service</li>    
+						<li>Treasury Dept: Claims Payments</li>
+						<li>....</li>
+					</ol>
+				</section>
+
+
+				<section>
+					<section>
+					<h2> Sept-Oct 2012 vs Sept-Oct 2013 </h2>
+					<p> In 2012 these items continued to be paid throughout October
+					<p><a href="./images/items_at_risk_2012.png"/> 
+					<img src="./images/items_at_risk_2012.png" width=75% height=75%/></a>
+				    </p>
+					</section>
+
+					<section>
+					<h2> Sept-Oct 2012 vs Sept_Oct 2013 </h2>
+					<p> While in 2013 none of these were paid after September 2013
+					<p><a href:"./images/items_dropped_after_sept_2013.png">
+					<img src="./images/items_dropped_after_sept_2013.png" width=70% height=70%/></a>
+					</p>
+					</section>
+				</section>
+
+
+				<section>
+							<h2> How much we saved?</h2>
+
+					<p> While claimingg that all this was caused by the shutdown would required further analysis 
+						we can estimate how much the Govermnement saved in the first half of Octber compared to 2012
+					</p>
+
+
+	<p><a href="./images/savings.png"> 
+	<img src="./images/savings.png" width=70% height=70%/></a></p>
+				</section>
+
+
+
+			
+
+				<section>
+					<h1>THE END</h1>
+					<p> All these slides where artisanally edited by hand.<p>
+					<p> (not so) #VINTAGEHTML</p>
+					<h3>By <a href="http://twitter.com/carlotorniai">@carlotorniai</a></h3>
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Exploring Governement's finances </title>
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+
+</style>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: rgb(88, 72, 246)
+   }
+
+   pre .number {
+     color: rgb(0, 0, 205);
+   }
+
+   pre .comment {
+     color: rgb(76, 136, 107);
+   }
+
+   pre .keyword {
+     color: rgb(0, 0, 255);
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: rgb(3, 106, 7);
+   }
+</style>
+
+
+
+
+</head>
+
+<body>
+<h1>Exploring Governement's finances </h1>
+
+<p>In order to understand the data I started with the first table T1.
+The documentation about T1 states that the table &ldquo;how much money does Uncle Sam have in his checking account on any given day&rdquo;&ldquo;</p>
+
+<p>I wanted to build a simple cumulative view of the the amount of money in each account at the beginnig fo the fiscal year for the time frame we had at our disposal.</p>
+
+<p><a href="./images/opening_accounts_2005_2013.png">
+   <img src="./images/opening_accounts_2005_2013.png"></a></p>
+
+
+<p>We can notice during the 2008-2011 the start fo the Supplementing financing program
+and the drop in the Tax and Loan Note accounts.</p>
+
+<p>For more info see this:
+<a href="http://www.pyramis.com/fileadmin/templates/pyramis_public/downloads/us/unwinding_the_SFP_WP_Nov_2010.pdf">http://www.pyramis.com/fileadmin/templates/pyramis_public/downloads/us/unwinding_the_SFP_WP_Nov_2010.pdf> Supplementing financing program</a></p>
+<p> The stduy reports that The Fed 
+created the program in coordination with the Treasury to drain excess reserves 
+from the banking system.1
+ The Treasury auctioned $40 billion in 35-day cash 
+management bills that day on behalf of the Fed to limit excess reserves created 
+in the banking system resulting from the initiation of the Primary Dealer Credit 
+Facility, as well as other contemplated Fed policy initiatives</p>
+<p>I was also interested in seeing more closeley the trend of the Tax and Loan Note Account.This is an account in a &quot;private-sector depository institution, held in the name of the district Federal Reserve Bank as fiscal agent of the United States, that serves as a repository for operating cash available to the U.S. Treasury. Withheld income taxes, employers’ contributions to the Social Security fund, and payments for U.S. government securities routinely go into a tax and loan account.&rdquo;&ldquo;</p>
+
+
+
+<p><a href="./images/money_in_tax_loan_account.png"> <img src="./images/money_in_tax_loan_account.png"/></a></p>
+
+<p>At this point I was curious to see how the money were spent during the financial crisis in particular looking for any significnat change in the expenses before and after 2008.</p>
+
+<p><a href="./images/compare_expenses_2005_2008.png"> <img src="./images/compare_expenses_2005_2008.png" width=70% height=70%/></a></p>
+
+<p><a href="./images/compare_expenses_2008_2011.png"> <img src="./images/compare_expenses_2008_2011.png" width=70% height=70%/></a></p>
+
+
+<p>So and now we came to the govrnement shutdown</p>
+
+<p>My question was: who didn&#39;t get paid during government shoutdown?</p>
+
+<p>Let&#39;s try to figure out who didn&#39;t withdraw money in the first two weeks of October.</p>
+
+<p> <img src="./images/item_paid_point_oct_2012.png" width=70% height=70%/></p>
+<p> <img src="./images/item_paid_points_oct_2013.png" width=70% height=70%/></p>
+
+
+
+<p>The type of visualization above doesn't really provide any insight. But inspecting the actual data one fact it's clear:
+There are &ldquo;less&rdquo; items that were paid on the first half of October 2013 with respect to the same time frame of the past year.</p>
+
+<p>Let&#39;s see which items were left out comparing the payments for the first 2 weeks of October between 2012 and 2013.
+Below are the itmes the items that were paid on 2012 that weren&#39;t paid in 2013 during the month of October</p>
+
+
+<pre><code>##  [1] &quot;Emergency Prep Response ( DHS )&quot;     
+##  [2] &quot;Federal Crop Ins Corp&quot;               
+##  [3] &quot;Federal Financing Bank&quot;              
+##  [4] &quot;International Monetary Fund&quot;         
+##  [5] &quot;Treasury Department programs&quot;        
+##  [6] &quot;Foreign Military Sales Program&quot;      
+##  [7] &quot;Commerce Programs&quot;                   
+##  [8] &quot;Federal Transit Admin&quot;               
+##  [9] &quot;Treasury Dept: Claims Payments&quot;      
+## [10] &quot;Agriculture Loan Payments ( misc )&quot;  
+## [11] &quot;Deposit Insurance Fund&quot;              
+## [12] &quot;State Department&quot;                    
+## [13] &quot;HHS: Indian Health Service&quot;          
+## [14] &quot;FSLIC Resolution Fund&quot;               
+## [15] &quot;National Credit Union Administration&quot;
+## [16] &quot;Centers for Disease Control&quot;         
+## [17] &quot;Environmental Protection Agency&quot;     
+## [18] &quot;Export Import Bank&quot;                  
+## [19] &quot;USDA: Forest Service&quot;                
+## [20] &quot;Federal Railroad Admin&quot;              
+## [21] &quot;Library of Congress&quot;                 
+## [22] &quot;Small Business Administration&quot;       
+## [23] &quot;Tennessee Valley Authority&quot;
+</code></pre>
+
+<p> Well can this just by chance or because some programs assoicated with these payments 
+   would have ended regardless the shutdown?
+Let&#39;s compare the difference between october 2012 and October 2011</p>
+
+<p>Now let&#39;s see items paid in the first half of October in 2011 that weren&#39;t paid in the same half of 2012.</p>
+
+
+<pre><code>## [1] &quot;Asian Development Bank Payment&quot; &quot;U S District Courts&quot;           
+## [3] &quot;Minerals Management Service&quot;
+</code></pre>
+
+<p>
+Let&#39;s see instead what was paid in 2012 that wasn&#39;t paid in 2011.</p>
+
+
+<pre><code>## [1] &quot;International Monetary Fund&quot;       
+## [2] &quot;Foreign Military Sales Program&quot;    
+## [3] &quot;Treasury Dept: Claims Payments&quot;    
+## [4] &quot;Agriculture Loan Payments ( misc )&quot;
+## [5] &quot;FSLIC Resolution Fund&quot;             
+## [6] &quot;Environmental Protection Agency&quot;   
+## [7] &quot;USDA: Forest Service&quot;
+</code></pre>
+
+
+<p>Let&#39;s now compare the items that were dropped in October 2012 and 2013 with what was dropped in  Sept 2012 and Sept 2013.</p>
+
+<pre><code>##  [1] &quot;Emergency Prep Response ( DHS )&quot;     
+##  [2] &quot;Federal Financing Bank&quot;              
+##  [3] &quot;Treasury Department programs&quot;        
+##  [4] &quot;Foreign Military Sales Program&quot;      
+##  [5] &quot;Commerce Programs&quot;                   
+##  [6] &quot;Federal Transit Admin&quot;               
+##  [7] &quot;Treasury Dept: Claims Payments&quot;      
+##  [8] &quot;Agriculture Loan Payments ( misc )&quot;  
+##  [9] &quot;Deposit Insurance Fund&quot;              
+## [10] &quot;State Department&quot;                    
+## [11] &quot;HHS: Indian Health Service&quot;          
+## [12] &quot;FSLIC Resolution Fund&quot;               
+## [13] &quot;National Credit Union Administration&quot;
+## [14] &quot;Centers for Disease Control&quot;         
+## [15] &quot;Environmental Protection Agency&quot;     
+## [16] &quot;Export Import Bank&quot;                  
+## [17] &quot;USDA: Forest Service&quot;                
+## [18] &quot;Federal Railroad Admin&quot;              
+## [19] &quot;Library of Congress&quot;                 
+## [20] &quot;Tennessee Valley Authority&quot;
+</code></pre>
+
+<p>Here we have now a list of 20 items  are &ldquo;at risk&rdquo; of being dropped in October 2013 due to the shutdown. Let&#39;s inspect the payments for these items  between September and Octpber 2012 and compare to what happened between September and October 2013.</p>
+
+<p><a href="./images/items_at_risk_2012.png"/> <img src="./images/items_at_risk_2012.png" width=75% height=75%/></a></p>
+
+<p> We can see in the box that most of these items were paid during the second half of October 2012 with the exception of &ldquo;Commence Program&rdquo; and &ldquo;Foreign Military Sales Program&rdquo;
+
+<p> Let's see now the payments for these items their payments during Sept - October of 2013.</p>
+
+<p><a href:"./images/items_dropped_after_sept_2013.png"><img src="./images/items_dropped_after_sept_2013.png" width=70% height=70%/></a></p>
+
+<p> We can see that all the payments for these items end on September 30 2103.
+While clainimg that all this was cause by the shutdown would required further analysis we can anyway estimate how much the Govermnement saved by comparing the amount paid during the same period in 2012 for these items.</p>
+
+
+<p><a href="./images/savings.png"> <img src="./images/savings.png" width=70% height=70%/></a></p>
+
+</body>
+
+</html>
+
